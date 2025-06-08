@@ -1,0 +1,73 @@
+<ion-content fullscreen>
+  <div class="fullscreen-container">
+    <div class="login-card">
+      <div class="header">
+        <div class="logo-text">AI VITALITY</div>
+      </div>
+      <div class="content">
+        <h1>Crear Cuenta</h1>
+
+        <form (ngSubmit)="registrarUsuario()" #registroForm="ngForm">
+          <ion-item class="custom-item">
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input type="text" [(ngModel)]="nombre" name="nombre" required #nombreInput="ngModel"></ion-input>
+            <ion-icon name="person-outline" slot="start"></ion-icon>
+          </ion-item>
+          <ion-note *ngIf="nombreInput.invalid && nombreInput.touched" color="danger">
+            Ingrese su nombre.
+          </ion-note>
+
+          <ion-item class="custom-item">
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input type="email" [(ngModel)]="email" name="email" required #emailInput="ngModel"></ion-input>
+            <ion-icon name="mail-outline" slot="start"></ion-icon>
+          </ion-item>
+          <ion-note *ngIf="emailInput.invalid && emailInput.touched" color="danger">
+            Ingrese un correo válido.
+          </ion-note>
+
+          <ion-item class="custom-item">
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input 
+              [type]="passwordType" 
+              [(ngModel)]="clave" 
+              name="password" 
+              required 
+              #claveInput="ngModel">
+            </ion-input>
+            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+            <ion-icon
+              class="eye-icon"
+              slot="end"
+              [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+              (click)="togglePasswordVisibility()">
+            </ion-icon>
+          </ion-item>
+          <ion-note *ngIf="claveInput.invalid && claveInput.touched" color="danger">
+            Ingrese una contraseña.
+          </ion-note>
+
+          <ion-item class="custom-item">
+            <ion-label position="floating">Teléfono</ion-label>
+            <ion-input type="tel" [(ngModel)]="telefono" name="telefono" required #telefonoInput="ngModel"></ion-input>
+            <ion-icon name="call-outline" slot="start"></ion-icon>
+          </ion-item>
+          <ion-note *ngIf="telefonoInput.invalid && telefonoInput.touched" color="danger">
+            Ingrese su número de teléfono.
+          </ion-note>
+
+          <div class="button-container">
+            <ion-button expand="block" type="submit" class="register-btn" [disabled]="registroForm.invalid">
+              Registrarse
+            </ion-button>
+          </div>
+        </form>
+
+        <div class="register-container">
+          <span>¿Ya tienes cuenta?</span>
+          <a [routerLink]="['/login']" class="login-link">Iniciar sesión</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

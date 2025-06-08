@@ -1,0 +1,154 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title size="large">Mi Diagnóstico</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="user-greeting">
+    <h2>Hola, {{ nombreUsuario }}</h2>
+  </div>
+
+  <!-- Tarjetas de acceso rápido -->
+  <div class="quick-access-cards">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="menu-card" routerLink="/principal/buscar">
+            <ion-card-content class="ion-text-center">
+              <ion-icon name="search-outline" class="menu-icon"></ion-icon>
+              <h3>Buscar Medicamentos</h3>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="menu-card" routerLink="/principal/mapa">
+            <ion-card-content class="ion-text-center">
+              <ion-icon name="location-outline" class="menu-icon"></ion-icon>
+              <h3>Farmacias Cercanas</h3>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="menu-card" routerLink="/principal/analisis">
+            <ion-card-content class="ion-text-center">
+              <ion-icon name="pulse-outline" class="menu-icon"></ion-icon>
+              <h3>Nuevo Diagnóstico</h3>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="menu-card" routerLink="/historial">
+            <ion-card-content class="ion-text-center">
+              <ion-icon name="document-text-outline" class="menu-icon"></ion-icon>
+              <h3>Mi Historial</h3>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <div *ngIf="ultimoDiagnostico" class="resultado-container">
+    <ion-card class="resultado-card">
+      <ion-card-header color="light">
+        <ion-card-title class="ion-text-center ion-padding-vertical">Último análisis</ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="ion-padding">
+        <div class="diagnostico-section">
+          <h2>Diagnóstico:</h2>
+          <p class="diagnostico-texto">{{ ultimoDiagnostico.diagnostico }}</p>
+        </div>
+        
+        <div class="recomendaciones-section">
+          <div class="recomendacion-header">
+            <h2>Recomendación principal:</h2>
+            <ion-button 
+              *ngIf="recomendaciones.length > 1" 
+              fill="clear" 
+              size="small" 
+              (click)="toggleRecomendaciones()"
+              class="ver-todas-btn"
+            >
+              <ion-icon 
+                slot="end" 
+                [name]="mostrarTodasRecomendaciones ? 'chevron-up-outline' : 'chevron-down-outline'"
+              ></ion-icon>
+              {{ mostrarTodasRecomendaciones ? 'Ver menos' : 'Ver todas' }}
+            </ion-button>
+          </div>
+          
+          <ion-text color="dark">
+            <p class="recomendaciones-texto">{{ recomendacionPrincipal }}</p>
+          </ion-text>
+
+          <!-- Lista de todas las recomendaciones -->
+          <div *ngIf="mostrarTodasRecomendaciones" class="todas-recomendaciones">
+            <ion-list lines="full" class="ion-margin-top">
+              <ion-item *ngFor="let rec of recomendaciones; let i = index" class="recomendacion-item">
+                <ion-label text-wrap>
+                  <h3>Recomendación {{ i + 1 }}</h3>
+                  <p>{{ rec }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </div>
+        </div>
+        
+        <!-- Sección de diagnóstico médico -->
+        <div *ngIf="ultimoDiagnostico.estado === 'DIAGNOSTICADA' && ultimoDiagnostico.diagnosticoMedico" class="diagnostico-medico-section">
+          <div class="diagnostico-medico-header" (click)="toggleDiagnosticoCompleto()">
+            <h2>Diagnóstico Médico</h2>
+            <ion-icon [name]="mostrarDiagnosticoCompleto ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+          </div>
+          
+          <div *ngIf="mostrarDiagnosticoCompleto" class="diagnostico-medico-content">
+            <div class="diagnostico-detalle">
+              <h3>Diagnóstico:</h3>
+              <p>{{ ultimoDiagnostico.diagnosticoMedico.diagnostico }}</p>
+            </div>
+            
+            <div class="recomendaciones-medico">
+              <h3>Recomendaciones del médico:</h3>
+              <p>{{ ultimoDiagnostico.diagnosticoMedico.recomendaciones }}</p>
+            </div>
+            
+            <div class="comentarios-medico" *ngIf="ultimoDiagnostico.diagnosticoMedico.comentarios">
+              <h3>Comentarios adicionales:</h3>
+              <p>{{ ultimoDiagnostico.diagnosticoMedico.comentarios }}</p>
+            </div>
+            
+            <div class="fecha-diagnostico">
+              <p><strong>Fecha del diagnóstico:</strong> {{ ultimoDiagnostico.diagnosticoMedico.fechaDiagnostico | date:'medium' }}</p>
+              <p><strong>Gravedad:</strong> {{ ultimoDiagnostico.diagnosticoMedico.gravedad }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="estado-section">
+          <h2>Estado de la consulta:</h2>
+          <div class="estado-badge" [ngClass]="getEstadoColor(ultimoDiagnostico.estado)">
+            {{ ultimoDiagnostico.estado }}
+          </div>
+        </div>
+        
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="!ultimoDiagnostico" class="no-diagnostico">
+    <ion-card>
+      <ion-card-content>
+        <p class="ion-text-center">No se encontró un diagnóstico reciente.</p>
+        <div class="actions-section">
+          <ion-button expand="block" color="primary" routerLink="/principal/analisis">
+            <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+            Realizar nuevo diagnóstico
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

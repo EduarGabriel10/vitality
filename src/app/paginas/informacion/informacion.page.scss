@@ -1,0 +1,70 @@
+// Importar variables globales
+$primary-color: #7a6bf3;
+$white: #ffffff;
+$card-radius: 24px;
+$button-radius: 50px;
+$shadow: 0 8px 20px rgba(122, 107, 243, 0.3);
+$text-color: #333;
+$secondary-text-color: #666;
+
+ion-content {
+  --background: #f0f2f7;
+  padding: 15px;
+}
+
+ion-card {
+  border-radius: $card-radius;
+  box-shadow: $shadow;
+  background: $white;
+  margin-bottom: 20px;
+  overflow: hidden;
+
+  ion-card-header {
+    background: linear-gradient(45deg, $primary-color, lighten($primary-color, 15%));
+    color: $white;
+    text-align: center;
+    padding: 20px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  ion-card-content {
+    font-size: 16px;
+    color: $text-color;
+    line-height: 1.5;
+    padding: 15px;
+  }
+}
+
+ion-button {
+  --background: #{$primary-color};
+  --box-shadow: 0 5px 15px rgba(122, 107, 243, 0.4);
+  --color: #{$white};
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: $button-radius;
+  width: 100%;
+  max-width: 240px;
+  margin: 20px auto;
+  display: block;
+}
+
+.info-container {
+  text-align: center;
+  padding: 20px;
+  
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: $text-color;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 16px;
+    color: $secondary-text-color;
+    line-height: 1.6;
+    max-width: 85%;
+    margin: 0 auto;
+  }
+}

@@ -1,0 +1,32 @@
+<ion-content fullscreen>
+  <div class="fullscreen-container">
+    <div class="welcome-card">
+      <div class="header">
+        <div class="logo-text">AI VITALITY</div>
+      </div>
+      <div class="content">
+        <h1>Bienvenido!</h1>
+        <p class="app-description">
+          Descubre si tus síntomas podrían estar relacionados con enfermedades respiratorias.
+          Nuestra IA te dará una evaluación preliminar.
+        </p>
+
+        <ion-button expand="block" class="create-account-btn" (click)="goToCreateAccount()">
+          CREA UNA CUENTA
+        </ion-button>
+
+        <ion-button expand="block" fill="outline" class="login-btn" (click)="goToLogin()">
+          INICIA SESIÓN
+        </ion-button>
+
+        <ion-button expand="block" fill="clear" class="info-btn" (click)="goToInfo()">
+          ¿Cómo funciona?
+        </ion-button>
+
+        <p class="disclaimer">
+          * Esta aplicación no sustituye una consulta médica. Consulte a un profesional de la salud ante cualquier duda.
+        </p>
+      </div>
+    </div>
+  </div>
+</ion-content>

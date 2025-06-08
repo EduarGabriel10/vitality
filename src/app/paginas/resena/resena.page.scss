@@ -1,0 +1,261 @@
+/* Estilos para componente de reseñas tipo Google Play */
+
+ion-content {
+  --background: #f8f9fa;
+}
+
+/* Estilos para el resumen de valoraciones */
+.rating-summary-card {
+  margin: 16px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  background-color: white;
+}
+
+.rating-summary {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.rating-average {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 20px;
+  border-right: 1px solid #e0e0e0;
+  min-width: 120px;
+  
+  h1 {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 0;
+    color: #333;
+  }
+  
+  .average-stars {
+    display: flex;
+    margin: 8px 0;
+    
+    .star {
+      font-size: 20px;
+      margin: 0 2px;
+      
+      &.filled {
+        color: #e7711b;
+      }
+    }
+  }
+  
+  .total-reviews {
+    margin: 5px 0 0;
+    color: #5f6368;
+    font-size: 14px;
+  }
+}
+
+.rating-distribution {
+  flex: 1;
+  padding-left: 20px;
+  
+  .rating-bar {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    
+    .star-label {
+      width: 25px;
+      text-align: right;
+      font-weight: 500;
+      color: #5f6368;
+      margin-right: 8px;
+    }
+    
+    .progress-bar {
+      flex: 1;
+      height: 8px;
+      background-color: #f1f3f4;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 0 8px;
+      
+      .progress {
+        height: 100%;
+        background-color: #e7711b;
+      }
+    }
+    
+    .percentage {
+      width: 40px;
+      font-size: 12px;
+      color: #5f6368;
+    }
+  }
+}
+
+.review-card {
+  margin: 16px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--ion-color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 12px;
+}
+
+.review-info {
+  flex: 1;
+}
+
+.user-name {
+  font-weight: bold;
+  margin: 0;
+  font-size: 16px;
+}
+
+.review-date {
+  color: #5f6368;
+  font-size: 12px;
+  margin: 0;
+}
+
+.rating {
+  display: flex;
+  margin-top: 4px;
+}
+
+.star {
+  font-size: 18px;
+  color: #e0e0e0;
+  margin-right: 2px;
+  
+  &.filled {
+    color: #e7711b;
+  }
+}
+
+.review-comment {
+  margin-top: 8px;
+  color: #202124;
+  line-height: 1.4;
+}
+
+// Estilos para el modal de reseña
+.rating-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+  
+  .rating-label {
+    margin-bottom: 16px;
+    font-size: 16px;
+  }
+  
+  .stars-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .rating-text {
+    margin-top: 12px;
+    font-weight: 500;
+    color: #e7711b;
+  }
+}
+
+.stars-container {
+  margin: 15px 0;
+}
+
+.rating-star {
+  font-size: 40px;
+  color: #e0e0e0;
+  cursor: pointer;
+  margin: 0 6px;
+  transition: transform 0.2s ease;
+  
+  &.active, &[name="star"] {
+    color: #e7711b;
+  }
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+ion-textarea {
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  margin-top: 16px;
+  font-size: 16px;
+  height: 120px;
+  padding: 10px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.no-reviews {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  color: #757575;
+  padding: 20px;
+  
+  .empty-icon {
+    font-size: 64px;
+    color: #dadce0;
+    margin-bottom: 16px;
+  }
+  
+  p {
+    margin: 4px 0;
+    font-size: 16px;
+    
+    &.secondary-text {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+  }
+}
+
+/* Estilo para el popover */
+ion-popover {
+  --width: 90%;
+  --max-height: 400px;
+  --border-radius: 10px;
+}
+
+ion-item {
+  margin-top: 10px;
+}
+
+/* Botones de acción dentro del popover */
+.ion-text-end ion-button {
+  margin-left: 10px;
+}
+

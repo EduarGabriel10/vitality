@@ -1,0 +1,537 @@
+
+
+/* Variables CSS para consistencia */
+:root {
+  --dashboard-bg: #f8f9fa;
+  --card-radius: 16px;
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+}
+
+/* Contenedor principal */
+.dashboard-content {
+  --background: var(--dashboard-bg);
+  --padding-start: var(--spacing-md);
+  --padding-end: var(--spacing-md);
+  --padding-top: var(--spacing-md);
+}
+
+/* Contenedores de secciones */
+.stats-container,
+.consultations-container {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Estilos de tarjetas */
+.stats-card,
+.consultations-card {
+  --border-radius: var(--card-radius);
+  box-shadow: var(--shadow-medium);
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Títulos de sección */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+}
+
+.section-title ion-icon {
+  font-size: 1.5rem;
+}
+
+.count-badge {
+  margin-left: auto;
+  font-size: 0.875rem;
+}
+
+/* Grid de estadísticas */
+.stats-grid {
+  --ion-grid-padding: 0;
+}
+
+.stats-grid ion-col {
+  --ion-grid-column-padding: var(--spacing-sm);
+}
+
+/* Items de estadísticas */
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-radius: 12px;
+  background: white;
+  box-shadow: var(--shadow-light);
+  transition: all 0.3s ease;
+  height: 100%;
+  min-height: 80px;
+}
+
+.stat-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.stat-item.pending {
+  border-left: 4px solid var(--ion-color-warning);
+}
+
+.stat-item.success {
+  border-left: 4px solid var(--ion-color-success);
+}
+
+.stat-item.primary {
+  border-left: 4px solid var(--ion-color-primary);
+}
+
+.filters-card {
+  margin: 4px;
+  padding: 0;
+  --padding-start: 8px;
+  --padding-end: 8px;
+
+  ion-card-header {
+    padding: 4px 8px;
+
+    .section-title {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      ion-icon {
+        font-size: 16px;
+      }
+    }
+  }
+
+  ion-card-content {
+    padding: 4px 8px;
+  }
+}
+
+/* Severity Container Styles */
+.severity-container {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  gap: 8px;
+  
+  .gravedad-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    white-space: nowrap;
+  }
+}
+
+/* Severity Indicator Styles */
+.severity-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 8px;
+  
+  .severity-icon {
+    margin-right: 6px;
+    font-size: 16px;
+  }
+  
+  .severity-text {
+    display: flex;
+    align-items: center;
+  }
+  
+  &.severity-high {
+    background-color: #ffebee;
+    color: #c62828;
+    
+    ion-icon {
+      color: #c62828;
+    }
+  }
+  
+  &.severity-medium {
+    background-color: #fff8e1;
+    color: #f57f17;
+    
+    ion-icon {
+      color: #f57f17;
+    }
+  }
+  
+  &.severity-low {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    
+    ion-icon {
+      color: #2e7d32;
+    }
+  }
+}
+
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+
+  .filter-item {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 40%;
+    min-width: 100px;
+    max-width: 48%;
+
+    ion-label {
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
+    .filter-select {
+      font-size: 13px;
+      --padding-start: 6px;
+      --padding-end: 6px;
+      height: 32px;
+    }
+  }
+
+  .clear-filters {
+    --padding-start: 4px;
+    --padding-end: 4px;
+    font-size: 12px;
+    height: 30px;
+    margin-left: auto;
+    margin-top: 4px;
+
+    ion-icon {
+      font-size: 14px;
+    }
+  }
+}
+
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.stat-item.pending .stat-icon {
+  background: rgba(var(--ion-color-warning-rgb), 0.1);
+  color: var(--ion-color-warning);
+}
+
+.stat-item.success .stat-icon {
+  background: rgba(var(--ion-color-success-rgb), 0.1);
+  color: var(--ion-color-success);
+}
+
+.stat-item.primary .stat-icon {
+  background: rgba(var(--ion-color-primary-rgb), 0.1);
+  color: var(--ion-color-primary);
+}
+
+.stat-icon ion-icon {
+  font-size: 24px;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ion-color-dark);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--ion-color-medium);
+  font-weight: 500;
+}
+
+/* Lista de consultas */
+.consultations-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.consultation-item {
+  background: white;
+  border-radius: 12px;
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-light);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.consultation-item:hover {
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-1px);
+}
+
+/* Header de consulta */
+.consultation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+  gap: var(--spacing-md);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  background: var(--primary-gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-avatar ion-icon {
+  font-size: 24px;
+}
+
+.user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  margin: 0 0 4px 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.consultation-date {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--ion-color-medium);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.consultation-date ion-icon {
+  font-size: 16px;
+}
+
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Cuerpo de consulta */
+.consultation-body {
+  margin-bottom: var(--spacing-lg);
+}
+
+.diagnosis-section {
+  background: rgba(var(--ion-color-light-rgb), 0.5);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+}
+
+.diagnosis-title {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.diagnosis-title ion-icon {
+  font-size: 18px;
+  color: var(--ion-color-primary);
+}
+
+.diagnosis-text {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ion-color-dark-shade);
+}
+
+/* Acciones de consulta */
+.consultation-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.action-btn {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  height: 36px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.action-btn ion-icon {
+  font-size: 18px;
+}
+
+.btn-text {
+  margin-left: 4px;
+}
+
+/* Estado vacío */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  color: var(--ion-color-medium);
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-md);
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 1.25rem;
+  color: var(--ion-color-dark);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-content {
+    --padding-start: var(--spacing-sm);
+    --padding-end: var(--spacing-sm);
+  }
+  
+  .stat-item {
+    padding: var(--spacing-md);
+    min-height: 60px;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .consultation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .user-info {
+    width: 100%;
+  }
+  
+  .status-badge {
+    align-self: flex-start;
+  }
+  
+  .consultation-actions {
+    gap: var(--spacing-xs);
+  }
+  
+  .action-btn .btn-text {
+    display: none;
+  }
+  
+  .action-btn {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.125rem;
+  }
+  
+  .user-name {
+    font-size: 1rem;
+  }
+  
+  .consultation-item {
+    padding: var(--spacing-md);
+  }
+  
+  .consultation-actions {
+    justify-content: center;
+  }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .stat-item,
+  .consultation-item,
+  .action-btn {
+    transition: none;
+  }
+  
+  .stat-item:hover,
+  .consultation-item:hover {
+    transform: none;
+  }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dashboard-bg: #0d1117;
+  }
+  
+  .stat-item,
+  .consultation-item,
+  .diagnosis-section {
+    background: var(--ion-color-dark);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}

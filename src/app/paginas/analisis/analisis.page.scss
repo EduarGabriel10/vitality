@@ -1,0 +1,274 @@
+/* Variables para colores y sombras */
+:root {
+  --primary-color: #3880ff;
+  --success-color: #2dd36f;
+  --danger-color: #eb445a;
+  --neutral-color: #92949c;
+  --light-bg: #f8f9fa;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --transition-speed: 0.3s;
+}
+
+/* Barra de progreso */
+/* AI Model Selector Styles */
+.ai-model-selector {
+  background: white;
+  margin: 10px 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 10;
+  position: relative;
+  
+  .model-option {
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover {
+      background-color: #f8f9fa;
+    }
+    
+    &.selected {
+      background-color: #f0f7ff;
+      border-left: 4px solid var(--ion-color-primary);
+    }
+    
+    ion-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: var(--ion-color-primary);
+    }
+    
+    span {
+      font-weight: 500;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    
+    small {
+      font-size: 12px;
+      color: #666;
+    }
+  }
+}
+
+.selected-model {
+  background: white;
+  margin: 10px 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  
+  ion-icon:first-child {
+    margin-right: 12px;
+    color: var(--ion-color-primary);
+    font-size: 20px;
+  }
+  
+  span {
+    flex: 1;
+  }
+  
+  ion-icon:last-child {
+    color: #888;
+    font-size: 16px;
+  }
+}
+
+.progress-container {
+  height: 8px;
+  background-color: #e0e0e0;
+  margin: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--success-color);
+  transition: width var(--transition-speed) ease;
+}
+
+/* Tarjeta de pregunta */
+.question-card {
+  margin: 20px 16px;
+  padding: 24px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+}
+
+/* Estilo de sección */
+.question-section {
+  display: inline-block;
+  padding: 4px 10px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--primary-color);
+  background-color: rgba(56, 128, 255, 0.1);
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+.question-text {
+  margin-top: 8px;
+  margin-bottom: 24px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* Opciones de respuesta */
+.answer-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  background-color: var(--light-bg);
+}
+
+.option:active {
+  transform: scale(0.98);
+}
+
+.option ion-icon {
+  font-size: 22px;
+  margin-right: 14px;
+}
+
+.option span {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Estilos específicos para opciones seleccionadas */
+.selected-yes {
+  border-color: var(--success-color);
+  background-color: rgba(45, 211, 111, 0.1);
+}
+
+.selected-no {
+  border-color: var(--danger-color);
+  background-color: rgba(235, 68, 90, 0.1);
+}
+
+.selected-dontknow {
+  border-color: var(--neutral-color);
+  background-color: rgba(146, 148, 156, 0.1);
+}
+
+.selected-detail {
+  border-color: var(--primary-color);
+  background-color: rgba(56, 128, 255, 0.1);
+}
+
+/* Tarjeta de opciones adicionales */
+.additional-info-card {
+  margin: 8px 0 20px;
+  padding: 20px;
+  background-color: rgba(56, 128, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(56, 128, 255, 0.2);
+  animation: fadeIn 0.4s ease;
+}
+
+.additional-info-card h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Botones de navegación */
+.navigation-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+ion-textarea {
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --placeholder-color: #999;
+  border-radius: 8px;
+  background: #f5f7fa;
+}
+
+/* Animación para la aparición de detalles adicionales */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modo oscuro y ajustes de accesibilidad */
+@media (prefers-color-scheme: dark) {
+  .question-card {
+    background-color: #1e1e1e;
+  }
+  
+  .question-section {
+    color: #60a5fa;
+    background-color: rgba(96, 165, 250, 0.15);
+  }
+  
+  .question-text {
+    color: #f0f0f0;
+  }
+  
+  .option {
+    background-color: #2a2a2a;
+  }
+  
+  .additional-info-card {
+    background-color: rgba(56, 128, 255, 0.1);
+    border-color: rgba(56, 128, 255, 0.3);
+  }
+  
+  .additional-info-card h2 {
+    color: #ddd;
+  }
+  
+  ion-textarea {
+    --background: #2a2a2a;
+    --placeholder-color: #aaa;
+  }
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .question-card {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

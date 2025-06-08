@@ -1,0 +1,115 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Gráfico de Tipos de Tos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="loadChartData()">
+        <ion-icon slot="icon-only" name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Refresher -->
+  <ion-refresher slot="fixed" (ionRefresh)="refreshData($event)">
+    <ion-refresher-content
+      pullingText="Desliza para refrescar"
+      refreshingSpinner="crescent"
+      refreshingText="Actualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-item>
+    <ion-label>Sección</ion-label>
+    <ion-select [(ngModel)]="selectedSection" (ionChange)="onSectionChange($event.detail.value)">
+      <ion-select-option value="Tos y Flema">Tos y Flema</ion-select-option>
+      <ion-select-option value="Dificultad Respiratoria">Dificultad Respiratoria</ion-select-option>
+      <ion-select-option value="Sintomas Generales">Sintomas Generales</ion-select-option>
+      <ion-select-option value="Otros Indicadores">Otros Indicadores</ion-select-option>
+    </ion-select>
+  </ion-item>
+  
+    <!-- Filtros de Año y Mes -->
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-select label="Año" [(ngModel)]="selectedYear" (ionChange)="loadChartData()">
+            <ion-select-option *ngFor="let year of availableYears" [value]="year">{{ year }}</ion-select-option>
+          </ion-select>
+        </ion-col>
+        <ion-col size="6">
+          <ion-select label="Mes" [(ngModel)]="selectedMonth" (ionChange)="loadChartData()">
+            <ion-select-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</ion-select-option>
+          </ion-select>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" color="medium" (click)="resetFilters()">
+            Eliminar Filtros
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="ion-text-center ion-padding">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando datos...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="ion-text-center ion-padding">
+    <ion-icon name="alert-circle" color="danger" style="font-size: 48px;"></ion-icon>
+    <p>{{ error }}</p>
+    <ion-button (click)="loadChartData()" fill="clear">
+      <ion-icon slot="start" name="refresh"></ion-icon>
+      Reintentar
+    </ion-button>
+  </div>
+
+  <!-- No Data State -->
+  <div *ngIf="!loading && !error && chartData.length === 0" class="ion-text-center ion-padding">
+    <ion-icon name="stats-chart" style="font-size: 64px; color: var(--ion-color-medium);"></ion-icon>
+    <h3>No hay datos disponibles</h3>
+    <p>No se encontraron registros de tos para mostrar en el gráfico.</p>
+    <ion-button (click)="loadChartData()" fill="outline">
+      <ion-icon slot="start" name="refresh"></ion-icon>
+      Recargar
+    </ion-button>
+  </div>
+
+  <!-- Chart and Summary Container -->
+  <div *ngIf="!loading && !error && chartData.length > 0" class="ion-padding">
+    <ion-grid class="chart-container">
+      <ion-row>
+        <!-- Chart (full width on mobile, 2/3 on larger screens) -->
+        <ion-col size="12" size-lg="8">
+          <div class="chart-wrapper">
+            <canvas #pieChart></canvas>
+          </div>
+        </ion-col>
+        
+        <ion-card *ngIf="resumen.length > 0 && !loading">
+          <ion-card-header>
+            <ion-card-title>Resumen - {{ selectedSection }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-item *ngFor="let item of resumen">
+                <ion-icon slot="start" [name]="getIcon(item.tipo)" [style.color]="getColor(item.tipo)"></ion-icon>
+                <ion-label>
+                  <h2>{{ item.tipo }}</h2>
+                  <p>{{ item.cantidad }} respuestas ({{ item.porcentaje }}%)</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+            <p>Total de Consultas: {{ totalConsultas }}</p>
+          </ion-card-content>
+        </ion-card>
+        
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

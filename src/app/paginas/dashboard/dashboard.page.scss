@@ -1,0 +1,337 @@
+.user-greeting {
+  margin-bottom: 20px;
+  
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin: 0;
+    padding-left: 8px;
+    border-left: 4px solid var(--ion-color-primary);
+  }
+}
+
+// Tarjetas de acceso rápido
+.quick-access-cards {
+  margin-bottom: 24px;
+  
+  .menu-card {
+    margin: 0;
+    height: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    
+    &:active {
+      transform: scale(0.97);
+    }
+    
+    ion-card-content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .menu-icon {
+      font-size: 36px;
+      color: var(--ion-color-primary);
+      margin-bottom: 8px;
+    }
+    
+    h3 {
+      margin: 8px 0 0;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+    }
+  }
+}
+
+.resultado-container {
+  margin-top: 10px;
+}
+
+.resultado-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  
+  ion-card-header {
+    background: var(--ion-color-primary-shade);
+    
+    ion-card-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: white;
+    }
+  }
+}
+
+.diagnostico-section,
+.recomendaciones-section,
+.estado-section {
+  margin-bottom: 24px;
+  
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--ion-color-primary);
+    display: flex;
+    align-items: center;
+    
+    &:before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background-color: var(--ion-color-primary);
+      display: inline-block;
+      margin-right: 8px;
+      border-radius: 50%;
+    }
+  }
+}
+
+.diagnostico-texto {
+  font-size: 16px;
+  line-height: 1.5;
+  padding: 0 8px;
+  color: var(--ion-color-dark);
+}
+
+.recomendacion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  
+  h2 {
+    margin-bottom: 0;
+    flex-grow: 1;
+  }
+  
+  .ver-todas-btn {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    --color: var(--ion-color-primary);
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: none;
+    margin: 0;
+    height: auto;
+    
+    ion-icon {
+      margin-left: 4px;
+      transition: transform 0.3s ease;
+    }
+  }
+}
+
+.recomendaciones-texto {
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-line;
+  background: rgba(var(--ion-color-light-rgb), 0.7);
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid var(--ion-color-secondary);
+  margin: 0;
+}
+
+.todas-recomendaciones {
+  margin-top: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  
+  ion-list {
+    background: transparent;
+    padding: 0;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .recomendacion-item {
+    --background: var(--ion-color-light);
+    --border-radius: 8px;
+    margin-bottom: 8px;
+    --padding-start: 16px;
+    --inner-padding-end: 16px;
+    --border-color: rgba(var(--ion-color-medium-rgb), 0.3);
+    
+    ion-label {
+      margin: 12px 0;
+      
+      h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ion-color-primary);
+        margin-bottom: 8px;
+      }
+      
+      p {
+        font-size: 14px;
+        color: var(--ion-color-dark);
+        margin: 0;
+        white-space: normal;
+      }
+    }
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.estado-activo {
+  background: linear-gradient(to right, #28c76f, #20a15e);
+}
+
+/* Estilos para la sección de diagnóstico médico */
+.diagnostico-medico-section {
+  margin: 24px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(var(--ion-color-medium-rgb), 0.2);
+  
+  .diagnostico-medico-header {
+    background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+    color: white;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+      
+      &:before {
+        display: none;
+      }
+    }
+    
+    ion-icon {
+      font-size: 20px;
+      transition: transform 0.3s ease;
+    }
+    
+    &:active {
+      background: linear-gradient(135deg, var(--ion-color-primary-shade), var(--ion-color-secondary-shade));
+    }
+  }
+  
+  .diagnostico-medico-content {
+    padding: 16px;
+    background: white;
+    
+    .diagnostico-detalle,
+    .recomendaciones-medico,
+    .comentarios-medico {
+      margin-bottom: 20px;
+      
+      h3 {
+        font-size: 16px;
+        color: var(--ion-color-primary);
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        
+        &:before {
+          content: "•";
+          margin-right: 8px;
+          color: var(--ion-color-primary);
+          font-size: 24px;
+          line-height: 0;
+        }
+      }
+      
+      p {
+        margin: 0;
+        padding: 10px 15px;
+        background: rgba(var(--ion-color-light-rgb), 0.5);
+        border-radius: 8px;
+        line-height: 1.5;
+        white-space: pre-line;
+      }
+    }
+    
+    .fecha-diagnostico {
+      font-size: 14px;
+      color: var(--ion-color-medium);
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px dashed var(--ion-color-light-shade);
+      
+      p {
+        margin: 5px 0;
+        
+        strong {
+          color: var(--ion-color-dark);
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+}
+
+.estado-en-proceso {
+  background: linear-gradient(to right, #ff9f43, #ff8510);
+}
+
+.estado-completado {
+  background: linear-gradient(to right, #00cfe8, #1e9af1);
+}
+
+.estado-inactivo {
+  background: linear-gradient(to right, #ea5455, #d03d3e);
+}
+
+.no-diagnostico p {
+  font-size: 18px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.actions-section {
+  margin-top: 24px;
+  
+  ion-button {
+    margin: 0;
+    --border-radius: 10px;
+    font-weight: 600;
+    height: 48px;
+    
+    &:not(:first-child) {
+      margin-top: 12px;
+    }
+    
+    ion-icon {
+      margin-right: 8px;
+      font-size: 20px;
+    }
+  }
+}
+
+.mt-10 {
+  margin-top: 10px;
+}

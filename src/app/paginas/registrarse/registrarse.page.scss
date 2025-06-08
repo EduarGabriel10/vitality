@@ -1,0 +1,161 @@
+// Variables para colores y dimensiones
+$primary-color: #7a6bf3; // Color púrpura de la imagen
+$white: #ffffff;
+$card-radius: 24px;
+$button-radius: 50px; // Botones más redondeados según la imagen
+$shadow: 0 8px 20px rgba(122, 107, 243, 0.3);
+$input-bg: #f7f9fc;
+$text-color: #333;
+
+// Eliminar todos los paddings y márgenes por defecto
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ion-content {
+  --background: #f0f2f7;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+.fullscreen-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.login-card {
+  width: 100%;
+  height: 100%;
+  max-width: 500px; // Limitar el ancho en pantallas grandes
+  background: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: $shadow;
+
+  .header {
+    height: 25%;
+    background: $primary-color;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 40px;
+    padding-left: 30px;
+    position: relative;
+
+    .logo-text {
+      font-size: 26px;
+      font-weight: bold;
+      color: $white;
+      letter-spacing: 1px;
+    }
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: $white;
+      border-radius: 100% 100% 0 0;
+    }
+  }
+
+  .content {
+    padding: 30px;
+    text-align: center;
+
+    h1 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .custom-item {
+      --background: $white;
+      --border-radius: 12px;
+      --padding-start: 12px;
+      --padding-end: 40px; // Añadir más padding a la derecha para el ícono
+      border: 1px solid #ddd;
+      box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 8px;
+      position: relative; // Asegurar que el posicionamiento absoluto del ícono sea relativo al item
+    }
+
+    ion-icon {
+      height: 50px;
+      font-size: 20px;
+      color: $primary-color;
+      margin-right: 10px;
+      
+      &.eye-icon {
+        margin-right: 0;
+        font-size: 22px;
+        color: #666;
+        cursor: pointer;
+        padding: 0 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        background: transparent;
+      }
+    }
+
+    .eye-icon {
+      cursor: pointer;
+    }
+
+    .button-container {
+      margin-top: 15px;
+
+      ion-button {
+        --border-radius: #{$button-radius};
+        font-size: 16px;
+        height: 48px;
+        text-transform: none;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+
+        &.register-btn {
+          --background: #{$primary-color};
+          --box-shadow: 0 5px 15px rgba(122, 107, 243, 0.3);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+        }
+      }
+
+
+    }
+
+    .register-container {
+      margin-top: 15px;
+      font-size: 14px;
+
+      .login-link {
+        color: $primary-color;
+        font-weight: bold;
+        text-decoration: none;
+      }
+    }
+  }
+}

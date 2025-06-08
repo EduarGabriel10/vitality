@@ -1,0 +1,95 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title size="large">Diagnóstico</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent" class="large-spinner"></ion-spinner>
+    <p class="loading-text">Analizando resultados...</p>
+  </div>
+
+  <div *ngIf="!isLoading && diagnosticoParsed" class="resultado-container">
+    <ion-card class="resultado-card">
+      <ion-card-header color="light">
+        <ion-card-title class="ion-text-center ion-padding-vertical">Resultado del Diagnóstico</ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="ion-padding">
+        <div class="diagnostico-section">
+          <h2>Diagnóstico:</h2>
+          <p class="diagnostico-texto">{{ diagnosticoParsed }}</p>
+        </div>
+        
+        <div class="probabilidad-section">
+          <h2>Probabilidad:</h2>
+          <div class="progress-container">
+            <div class="progress-bar" [ngStyle]="{'width': getWidthForProgressBar()}" [ngClass]="getProbabilidadColor()">
+              <span class="progress-text">{{ getProbabilidadDisplay() }}</span>
+            </div>
+          </div>
+          <p class="probabilidad-label">{{ getProbabilidadLabel() }}</p>
+        </div>
+
+        <!-- Sección de Gravedad -->
+        <div class="gravedad-section">
+          <h2>
+            <ion-icon name="alert-circle" color="warning"></ion-icon>
+            Nivel de Gravedad
+          </h2>
+          
+          <div class="gravedad-visual">
+            <div class="gravedad-bar">
+              <div class="gravedad-level" [ngClass]="getGravedadClass()">
+                <div class="gravedad-fill"></div>
+                <span class="gravedad-value">{{ gravedad }}%</span>
+              </div>
+            </div>
+            
+            <div class="gravedad-labels">
+              <span [class.active]="gravedad <= 30">
+                <ion-icon name="checkmark-circle" *ngIf="gravedad <= 30"></ion-icon>
+                Baja
+              </span>
+              <span [class.active]="gravedad > 30 && gravedad <= 70">
+                <ion-icon name="warning" *ngIf="gravedad > 30 && gravedad <= 70"></ion-icon>
+                Media
+              </span>
+              <span [class.active]="gravedad > 70">
+                <ion-icon name="alert" *ngIf="gravedad > 70"></ion-icon>
+                Alta
+              </span>
+            </div>
+            
+            <div class="gravedad-desc" *ngIf="getGravedadDescripcion()">
+              <ion-icon [name]="getGravedadIcon()" [color]="getGravedadColor()"></ion-icon>
+              {{ getGravedadDescripcion() }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de Recomendaciones -->
+        <div class="recomendaciones-section">
+          <h2>Recomendaciones</h2>
+          <ion-list lines="none" *ngIf="recomendaciones && recomendaciones.length > 0">
+            <ion-item *ngFor="let recomendacion of recomendaciones">
+              <ion-icon name="checkmark-circle" slot="start" color="primary"></ion-icon>
+              <ion-label class="ion-text-wrap">{{ recomendacion }}</ion-label>
+            </ion-item>
+          </ion-list>
+          <ion-note *ngIf="!recomendaciones || recomendaciones.length === 0" class="no-recomendaciones">
+            No hay recomendaciones disponibles.
+          </ion-note>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="!isLoading && !diagnosticoParsed" class="no-diagnostico">
+    <ion-card>
+      <ion-card-content>
+        <p class="ion-text-center">{{ diagnostico }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

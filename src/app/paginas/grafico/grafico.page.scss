@@ -1,0 +1,103 @@
+// Base styles
+.chart-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 600px; // Limitar ancho máximo
+  
+  canvas {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1; // Mantener relación de aspecto 1:1
+  }
+}
+
+.summary-card {
+  background: var(--ion-color-light);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  margin: 16px auto 0;
+  max-width: 600px;
+}
+
+.summary-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --inner-padding-end: 12px;
+  --min-height: 64px;
+  
+  ion-label {
+    margin: 8px 0;
+  }
+}
+
+.summary-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+}
+
+.total-item {
+  --background: var(--ion-color-light-shade);
+  --padding-start: 16px;
+  --padding-end: 16px;
+  margin-top: 8px;
+  
+  ion-badge {
+    font-size: 1rem;
+    padding: 8px 12px;
+  }
+}
+
+// Desktop styles
+@media (min-width: 992px) {
+  .chart-container {
+    max-width: 1200px;
+    padding: 0 24px;
+  }
+  
+  ion-grid {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .chart-wrapper {
+    margin: 0 16px 0 0;
+    max-width: 500px;
+  }
+  
+  .summary-card {
+    margin: 0 0 0 16px;
+    max-width: 400px;
+    height: 500px;
+    overflow-y: auto;
+  }
+  
+  ion-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+// Mobile styles
+@media (max-width: 991px) {
+  .chart-wrapper {
+    margin: 0 auto;
+    padding: 0 8px;
+  }
+  
+  .summary-card {
+    margin: 24px auto;
+  }
+}

@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Mi Aplicación</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Menú lateral que se despliega desde la izquierda -->
+<ion-menu contentId="main-content" side="start" menuId="first" type="overlay">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Menú</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-menu-toggle auto-hide="false">
+        <ion-item [routerLink]="'/principalm/medico'" detail="false">
+          <ion-icon slot="start" name="person-outline"></ion-icon>
+          <ion-label>Médico</ion-label>
+        </ion-item>
+      </ion-menu-toggle>
+      
+      <ion-menu-toggle auto-hide="false">
+        <ion-item [routerLink]="'/principalm/dashboardm'" detail="false">
+          <ion-icon slot="start" name="easel-outline"></ion-icon>
+          <ion-label>Dashboard</ion-label>
+        </ion-item>
+      </ion-menu-toggle>
+
+      <ion-menu-toggle auto-hide="false">
+        <ion-item [routerLink]="'/principalm/horario'" detail="false">
+          <ion-icon slot="start" name="time-outline"></ion-icon>
+          <ion-label>Horario</ion-label>
+        </ion-item>
+      </ion-menu-toggle>
+
+      <ion-menu-toggle auto-hide="false">
+        <ion-item [routerLink]="'/principalm/citamed'" detail="false">
+          <ion-icon slot="start" name="calendar-outline"></ion-icon>
+          <ion-label>Citas Médicas</ion-label>
+        </ion-item>
+      </ion-menu-toggle>
+      
+      <ion-menu-toggle auto-hide="false">
+        <ion-item [routerLink]="'/principalm/resenam'" detail="false">
+          <ion-icon slot="start" name="book-outline"></ion-icon>
+          <ion-label>Reseña</ion-label>
+        </ion-item>
+      </ion-menu-toggle>
+
+
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<!-- Contenido principal de la página -->
+<ion-router-outlet id="main-content"></ion-router-outlet>

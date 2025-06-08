@@ -1,0 +1,109 @@
+<ion-content [fullscreen]="true">
+    <ion-toolbar color="primary">
+      <ion-title size="large">Reseñas</ion-title>
+    </ion-toolbar>
+
+  <!-- Resumen de valoraciones -->
+  <ion-card class="rating-summary-card">
+    <ion-card-content>
+      <div class="rating-summary">
+        <div class="rating-average">
+          <h1>{{ calificacionPromedio }}</h1>
+          <div class="average-stars">
+            <ng-container *ngFor="let valor of estrellasPromedio; let i = index">
+              <ion-icon 
+                [name]="valor === 1 ? 'star' : (valor === 0.5 ? 'star-half' : 'star-outline')" 
+                class="star filled">
+              </ion-icon>
+            </ng-container>
+          </div>
+          <p class="total-reviews">{{ totalResenas }} {{ totalResenas === 1 ? 'reseña' : 'reseñas' }}</p>
+        </div>
+        
+        <div class="rating-distribution">
+          <div class="rating-bar" *ngFor="let porcentaje of estrellasPorcentaje.slice().reverse(); let i = index">
+            <span class="star-label">{{ 5 - i }}</span>
+            <div class="progress-bar">
+              <div class="progress" [style.width.%]="porcentaje"></div>
+            </div>
+            <span class="percentage">{{ porcentaje }}%</span>
+          </div>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Mostrar todas las reseñas -->
+  <ion-card *ngFor="let resena of allResenas" class="review-card">
+    <ion-card-header>
+      <div class="review-header">
+        <div class="user-avatar">
+          {{ resena.usuario && resena.usuario.nombre ? resena.usuario.nombre.charAt(0) : 'U' }}
+        </div>
+        <div class="review-info">
+          <h3 class="user-name">{{ resena.usuario.nombre || 'Usuario Anónimo' }}</h3>
+          <p class="review-date">{{ resena.fecha | date:'short' }}</p>
+        </div>
+        <!-- Opción para eliminar si es el autor -->
+        <ion-button *ngIf="esAutorDeResena(resena)" fill="clear" size="small" (click)="eliminarResena(resena.id)">
+          <ion-icon slot="icon-only" name="trash-outline" color="danger"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="rating">
+        <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+          <ion-icon 
+            name="star" 
+            class="star" 
+            [class.filled]="star <= resena.calificacion">
+          </ion-icon>
+        </ng-container>
+      </div>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="review-comment">{{ resena.comentario }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Mensaje si no hay reseñas -->
+  <div class="no-reviews" *ngIf="allResenas.length === 0">
+    <ion-icon name="chatbox-ellipses-outline" class="empty-icon"></ion-icon>
+    <p>No hay reseñas disponibles</p>
+    <p class="secondary-text">Sé el primero en compartir tu opinión</p>
+  </div>
+  
+  <!-- Botón para abrir el popover -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="abrirPopover($event)">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Popover de reseña -->
+  <ion-popover [isOpen]="popoverOpen" (didDismiss)="popoverOpen = false" [event]="popoverEvent">
+    <ng-template>
+      <ion-content class="ion-padding">
+        <h3 class="ion-text-center">Califica la App</h3>
+
+        <div class="stars-container ion-text-center">
+          <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+            <ion-icon
+              name="{{ star <= calificacion ? 'star' : 'star-outline' }}"
+              class="rating-star"
+              (click)="seleccionarEstrella(star)">
+            </ion-icon>        
+          </ng-container>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Comentario</ion-label>
+          <ion-textarea [(ngModel)]="comentario" rows="4" placeholder="Escribe tu opinión..."></ion-textarea>
+        </ion-item>
+
+        <div class="ion-text-end ion-padding-top">
+          <ion-button size="small" fill="clear" (click)="popoverOpen = false">Cancelar</ion-button>
+          <ion-button size="small" (click)="enviarResenaYCerrarPopover()">Publicar</ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-popover>
+</ion-content>

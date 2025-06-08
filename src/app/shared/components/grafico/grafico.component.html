@@ -1,0 +1,43 @@
+<div class="compact-chart-container">
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="!isLoading && error" class="error-message">
+    <ion-icon name="warning-outline"></ion-icon>
+    <ion-button fill="clear" (click)="loadSummaryData()" size="small">
+      <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+    </ion-button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !error" class="chart-content">
+    <!-- Question Selector -->
+    <div class="selector-container" *ngIf="preguntasDisponibles.length > 0">
+      <ion-select 
+        [(ngModel)]="selectedQuestionId" 
+        (ionChange)="onQuestionChange()"
+        [interface]="'popover'"
+        placeholder="Select symptom">
+        <ion-select-option 
+          *ngFor="let pregunta of preguntasDisponibles" 
+          [value]="pregunta.id">
+          {{ pregunta.text }}
+        </ion-select-option>
+      </ion-select>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-wrapper">
+      <div class="chart-container">
+        <canvas baseChart
+                [data]="barChartData"
+                [options]="barChartOptions"
+                type="bar">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>

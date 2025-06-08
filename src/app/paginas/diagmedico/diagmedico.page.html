@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/principal/dashboardm"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Diagnóstico Médico</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-item>
+    <ion-label position="stacked">Diagnóstico</ion-label>
+    <ion-textarea [(ngModel)]="diagnostico" placeholder="Escribe el diagnóstico..."></ion-textarea>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Recomendaciones</ion-label>
+    <ion-textarea [(ngModel)]="recomendaciones" placeholder="Consejos para el paciente..."></ion-textarea>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Comentarios</ion-label>
+    <ion-textarea [(ngModel)]="comentarios" placeholder="Comentarios adicionales..."></ion-textarea>
+  </ion-item>
+
+  <ion-item lines="none" class="gravedad-container">
+    <ion-label>Nivel de Gravedad</ion-label>
+    <ion-select [(ngModel)]="gravedad" (ionChange)="updateGravedad()" interface="action-sheet">
+      <ion-select-option value="BAJA">Baja</ion-select-option>
+      <ion-select-option value="MEDIA">Media</ion-select-option>
+      <ion-select-option value="ALTA">Alta</ion-select-option>
+    </ion-select>
+  </ion-item>
+  
+  <div class="gravedad-visual">
+    <div class="gravedad-bar">
+      <div class="gravedad-level" [ngClass]="'nivel-' + gravedad.toLowerCase()">
+        <div class="gravedad-fill"></div>
+      </div>
+    </div>
+    <div class="gravedad-labels">
+      <span [class.active]="gravedad === 'BAJA'">Baja</span>
+      <span [class.active]="gravedad === 'MEDIA'">Media</span>
+      <span [class.active]="gravedad === 'ALTA'">Alta</span>
+    </div>
+  </div>
+
+  <ion-button expand="full" color="success" (click)="enviarDiagnostico()">
+    Enviar Diagnóstico
+  </ion-button>
+
+</ion-content>

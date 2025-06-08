@@ -1,0 +1,126 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="principalm/dashboardm"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalles Consulta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Tarjeta de Información General -->
+  <ion-card class="info-card">
+    <ion-card-header class="card-header">
+      <ion-card-title class="card-title">Información General</ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="card-content">
+      <ion-list lines="none" class="info-list">
+        <ion-item class="info-item">
+          <ion-icon name="person-outline" slot="start" class="icon"></ion-icon>
+          <ion-label>
+            <h3>Paciente</h3>
+            <p>{{ usuario?.nombre || 'No disponible' }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item class="info-item">
+          <ion-icon name="calendar-outline" slot="start" class="icon"></ion-icon>
+          <ion-label>
+            <h3>Fecha</h3>
+            <p>{{ consulta?.fecha | date: 'EEEE d MMMM y, h:mm a' }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item class="info-item">
+          <ion-icon name="document-text-outline" slot="start" class="icon"></ion-icon>
+          <ion-label>
+            <h3>Estado</h3>
+            <p>
+              <ion-badge [color]="consulta?.estado?.toLowerCase() === 'pendiente' ? 'warning' : 'success'">
+                {{ consulta?.estado || 'No especificado' }}
+              </ion-badge>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Tarjeta de Diagnóstico -->
+  <ion-card class="diagnostico-card">
+    <ion-card-header class="card-header">
+      <ion-card-title class="card-title">
+        <ion-icon name="medical-outline" class="header-icon"></ion-icon>
+        Diagnóstico
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="card-content">
+      <div class="diagnostico-text">
+        {{ resultadoIA?.diagnostico || 'No hay diagnóstico disponible' }}
+      </div>
+      
+      <div class="indicadores">
+        <!-- Indicador de Probabilidad -->
+        <div class="indicador" *ngIf="porcentaje">
+          <div class="indicador-header">
+            <span class="indicador-label">Probabilidad</span>
+            <span class="indicador-valor">{{ porcentaje }}%</span>
+          </div>
+          <ion-progress-bar 
+            [value]="parseInt(porcentaje) / 100"
+            [color]="getProgressBarColor(parseInt(porcentaje))"
+            class="progress-bar">
+          </ion-progress-bar>
+        </div>
+        
+        <!-- Indicador de Gravedad -->
+        <div class="indicador" *ngIf="gravedad">
+          <div class="indicador-header">
+            <span class="indicador-label">Nivel de gravedad</span>
+            <span class="indicador-valor">{{ getSeverityText(parseInt(gravedad)) }}</span>
+          </div>
+          <ion-progress-bar 
+            [value]="parseInt(gravedad) / 100"
+            [color]="getSeverityColor(parseInt(gravedad))"
+            class="progress-bar">
+          </ion-progress-bar>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Tarjeta de Recomendaciones -->
+  <ion-card class="recomendaciones-card" *ngIf="recomendaciones?.length">
+    <ion-card-header class="card-header">
+      <ion-card-title class="card-title">
+        <ion-icon name="bulb-outline" class="header-icon"></ion-icon>
+        Recomendaciones
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="card-content">
+      <ion-list lines="none" class="recomendaciones-list">
+        <ion-item *ngFor="let rec of recomendaciones" class="recomendacion-item">
+          <ion-icon name="checkmark-circle" slot="start" class="check-icon"></ion-icon>
+          <ion-label class="recomendacion-text">{{ rec }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Respuestas del Usuario</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let r of respuestas">
+          <ion-label>
+            <h3>{{ r.pregunta }}</h3>
+            <p><strong>Respuesta:</strong> {{ r.respuesta }}</p>
+            <p *ngIf="r.detalles"><strong>Detalles:</strong> {{ r.detalles }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

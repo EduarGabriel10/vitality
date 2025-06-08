@@ -1,0 +1,224 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      <ion-icon name="analytics-outline" slot="start"></ion-icon>
+      Dashboard de Síntomas
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="dashboard-content" [class.filtered]="filtroEstado !== 'todos' || filtroMes !== 'todos'">
+  <!-- Filtros -->
+  <ion-card class="filters-card">
+    <ion-card-header>
+      <ion-card-title class="section-title">
+        <ion-icon name="funnel-outline"></ion-icon>
+        Filtros
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="filters-container">
+        <!-- Filtro por Estado -->
+        <div class="filter-item">
+          <ion-label>Estado:</ion-label>
+          <ion-select 
+            [value]="filtroEstado" 
+            (ionChange)="onEstadoChange($event)"
+            interface="popover"
+            class="filter-select"
+          >
+            <ion-select-option value="todos">Todos</ion-select-option>
+            <ion-select-option value="pendiente">Pendientes</ion-select-option>
+            <ion-select-option value="diagnosticada">Diagnosticadas</ion-select-option>
+          </ion-select>
+        </div>
+
+        <!-- Filtro por Mes -->
+        <div class="filter-item">
+          <ion-label>Mes:</ion-label>
+          <ion-select 
+            [value]="filtroMes" 
+            (ionChange)="onMesChange($event)"
+            interface="popover"
+            class="filter-select"
+          >
+            <ion-select-option value="todos">Todos los meses</ion-select-option>
+            <ion-select-option *ngFor="let mes of meses" [value]="mes.value">
+              {{ mes.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </div>
+
+        <!-- Botón para limpiar filtros -->
+        <ion-button 
+          fill="clear" 
+          size="small" 
+          (click)="limpiarFiltros()"
+          class="clear-filters"
+        >
+          <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+          Limpiar filtros
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Resumen General -->
+  <div class="stats-container">
+    <ion-card class="stats-card">
+      <ion-card-header>
+        <ion-card-title class="section-title">
+          <ion-icon name="bar-chart-outline"></ion-icon>
+          Resumen General
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid class="stats-grid">
+          <ion-row>
+            <ion-col size="12" size-md="4">
+              <div class="stat-item pending">
+                <div class="stat-icon">
+                  <ion-icon name="time-outline"></ion-icon>
+                </div>
+                <div class="stat-content">
+                  <div class="stat-number">{{ resumenGeneral.totalPendientes || 0 }}</div>
+                  <div class="stat-label">Pendientes</div>
+                </div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-md="4">
+              <div class="stat-item success">
+                <div class="stat-icon">
+                  <ion-icon name="checkmark-circle-outline"></ion-icon>
+                </div>
+                <div class="stat-content">
+                  <div class="stat-number">{{ resumenGeneral.totalDiagnosticadas || 0 }}</div>
+                  <div class="stat-label">Diagnosticadas</div>
+                </div>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-md="4">
+              <div class="stat-item primary">
+                <div class="stat-icon">
+                  <ion-icon name="people-outline"></ion-icon>
+                </div>
+                <div class="stat-content">
+                  <div class="stat-number">{{ resumenGeneral.totalConsultas || 0 }}</div>
+                  <div class="stat-label">Total Consultas</div>
+                </div>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Lista de Consultas -->
+  <div class="consultations-container">
+    <ion-card class="consultations-card">
+      <ion-card-header>
+        <ion-card-title class="section-title">
+          <ion-icon name="document-text-outline"></ion-icon>
+          Consultas de Usuarios
+          <ion-badge color="medium" class="count-badge">{{ respuestaDetalle.length || 0 }}</ion-badge>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="consultations-list" *ngIf="respuestaDetalle && respuestaDetalle.length > 0; else noData">
+          <div class="consultation-item" *ngFor="let r of respuestaDetalle; trackBy: trackByConsultation">
+            <div class="consultation-header">
+              <div class="user-info">
+                <ion-avatar>
+                  <ion-icon name="person-circle-outline" style="font-size: 40px;"></ion-icon>
+                </ion-avatar>
+                
+                <div class="user-details">
+                  <h3 class="user-name">{{ r?.usuario?.nombre || r?.nombreUsuario || 'Usuario' }}</h3>
+                  <p class="consultation-date">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    {{ r.fecha | date: 'dd/MM/yyyy HH:mm' }}
+                  </p>
+                </div>
+              </div>
+              <ion-badge 
+                [color]="r.estado.toLowerCase() === 'pendiente' ? 'warning' : 'success'"
+                class="status-badge">
+                {{ r.estado }}
+              </ion-badge>
+            </div>
+            
+            <div class="consultation-body">
+              <div class="diagnosis-section">
+                <h4 class="diagnosis-title">
+                  <ion-icon name="medical-outline"></ion-icon>
+                  Diagnóstico IA
+                </h4>
+                <p class="diagnosis-text">{{ r.diagnostico }}</p>
+                <div class="severity-container">
+                  <span class="gravedad-label">Gravedad:</span>
+                  <div class="severity-indicator" [ngClass]="{
+                    'severity-high': r.gravedad === 'Alta' || r.gravedad === 'ALTA' || r.gravedad === 'alta' || (r.gravedad && !isNaN(r.gravedad) && parseInt(r.gravedad) > 70),
+                    'severity-medium': r.gravedad === 'Media' || r.gravedad === 'MEDIA' || r.gravedad === 'media' || (r.gravedad && !isNaN(r.gravedad) && parseInt(r.gravedad) > 30 && parseInt(r.gravedad) <= 70),
+                    'severity-low': r.gravedad === 'Baja' || r.gravedad === 'BAJA' || r.gravedad === 'baja' || (r.gravedad && !isNaN(r.gravedad) && parseInt(r.gravedad) <= 30)
+                  }">
+                    <ion-icon 
+                      [name]="(r.gravedad === 'Alta' || r.gravedad === 'ALTA' || r.gravedad === 'alta' || (r.gravedad && !isNaN(r.gravedad) && parseInt(r.gravedad) > 70)) ? 'alert-circle' : 
+                             ((r.gravedad === 'Media' || r.gravedad === 'MEDIA' || r.gravedad === 'media' || (r.gravedad && !isNaN(r.gravedad) && parseInt(r.gravedad) > 30 && parseInt(r.gravedad) <= 70)) ? 'warning' : 'checkmark-circle')"
+                      class="severity-icon">
+                    </ion-icon>
+                    <span class="severity-text">
+                      {{ r.gravedad }}
+                      <ng-container *ngIf="r.gravedad && !isNaN(r.gravedad)">%</ng-container>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="consultation-actions">
+              <ion-button 
+                fill="clear" 
+                size="small" 
+                (click)="verConsulta(r)" 
+                color="medium"
+                class="action-btn">
+                <ion-icon slot="start" name="eye-outline"></ion-icon>
+                <span class="btn-text">Ver</span>
+              </ion-button>
+              
+              <ion-button 
+                fill="clear" 
+                size="small" 
+                (click)="agregarDiagnostico(r)" 
+                color="primary"
+                class="action-btn">
+                <ion-icon slot="start" name="medkit-outline"></ion-icon>
+                <span class="btn-text">Diagnosticar</span>
+              </ion-button>
+            
+              
+              <ion-button 
+                fill="clear" 
+                size="small" 
+                (click)="eliminarConsulta(r)" 
+                color="danger"
+                class="action-btn">
+                <ion-icon slot="start" name="trash-outline"></ion-icon>
+                <span class="btn-text">Eliminar</span>
+              </ion-button>
+            </div>
+          </div>
+        </div>
+        
+        <ng-template #noData>
+          <div class="empty-state">
+            <ion-icon name="folder-open-outline" class="empty-icon"></ion-icon>
+            <h3>No hay consultas disponibles</h3>
+            <p>Las consultas de usuarios aparecerán aquí cuando estén disponibles.</p>
+          </div>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

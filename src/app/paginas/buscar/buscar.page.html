@@ -1,0 +1,136 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/principal/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Buscar Medicamento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Sección de búsqueda mejorada -->
+  <div class="search-section">
+    <div class="search-header">
+      <ion-icon name="medical" class="search-icon"></ion-icon>
+      <h3 class="search-title">Consulta información médica</h3>
+      <p class="search-subtitle">Ingresa el nombre del medicamento para obtener información detallada</p>
+    </div>
+    
+    <div class="search-input-container">
+      <ion-item class="search-item" lines="none">
+        <ion-icon name="search" slot="start" class="input-icon"></ion-icon>
+        <ion-input 
+          [(ngModel)]="inputUsuario" 
+          placeholder="Ej: Ibuprofeno, Paracetamol..."
+          class="search-input">
+        </ion-input>
+        <ion-button 
+          fill="clear" 
+          slot="end" 
+          *ngIf="inputUsuario" 
+          (click)="limpiarBusqueda()">
+          <ion-icon name="close-circle" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-item>
+      
+      <ion-button 
+        expand="block" 
+        (click)="consultarIA()" 
+        class="search-button"
+        [disabled]="!inputUsuario || cargando">
+        <ion-icon name="sparkles" slot="start" *ngIf="!cargando"></ion-icon>
+        <ion-spinner name="crescent" *ngIf="cargando"></ion-spinner>
+        {{ cargando ? 'Consultando...' : 'Consultar IA' }}
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Resultado principal mejorado -->
+  <div class="result-section" *ngIf="descripcionGeneral">
+    <ion-card class="main-result-card">
+      <ion-card-header>
+        <div class="card-header-content">
+          <ion-icon name="information-circle" class="card-icon"></ion-icon>
+          <ion-card-title class="card-title">Descripción General</ion-card-title>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="description-text">{{ descripcionGeneral }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Secciones expandibles mejoradas -->
+  <div class="details-section" *ngIf="descripcionGeneral">
+    <h4 class="section-title">Información Detallada</h4>
+    
+    <ion-accordion-group class="accordion-group">
+      <ion-accordion value="paraQueSirve" class="custom-accordion">
+        <ion-item slot="header" class="accordion-header">
+          <div class="accordion-header-content">
+            <ion-icon name="help-circle" class="section-icon"></ion-icon>
+            <ion-label class="section-label">¿Para qué sirve?</ion-label>
+          </div>
+          <ion-icon name="chevron-down" slot="end" class="chevron-icon"></ion-icon>
+        </ion-item>
+        <div slot="content" class="accordion-content">
+          <p class="content-text">{{ paraQueSirve }}</p>
+        </div>
+      </ion-accordion>
+
+      <ion-accordion value="indicaciones" class="custom-accordion">
+        <ion-item slot="header" class="accordion-header">
+          <div class="accordion-header-content">
+            <ion-icon name="list" class="section-icon"></ion-icon>
+            <ion-label class="section-label">Indicaciones</ion-label>
+          </div>
+          <ion-icon name="chevron-down" slot="end" class="chevron-icon"></ion-icon>
+        </ion-item>
+        <div slot="content" class="accordion-content">
+          <p class="content-text">{{ indicaciones }}</p>
+        </div>
+      </ion-accordion>
+
+      <ion-accordion value="efectosSecundarios" class="custom-accordion">
+        <ion-item slot="header" class="accordion-header">
+          <div class="accordion-header-content">
+            <ion-icon name="warning" class="section-icon warning"></ion-icon>
+            <ion-label class="section-label">Efectos Secundarios</ion-label>
+          </div>
+          <ion-icon name="chevron-down" slot="end" class="chevron-icon"></ion-icon>
+        </ion-item>
+        <div slot="content" class="accordion-content">
+          <p class="content-text">{{ efectosSecundarios }}</p>
+        </div>
+      </ion-accordion>
+
+      <ion-accordion value="comoSeUsa" class="custom-accordion">
+        <ion-item slot="header" class="accordion-header">
+          <div class="accordion-header-content">
+            <ion-icon name="clipboard" class="section-icon"></ion-icon>
+            <ion-label class="section-label">Cómo se debe usar</ion-label>
+          </div>
+          <ion-icon name="chevron-down" slot="end" class="chevron-icon"></ion-icon>
+        </ion-item>
+        <div slot="content" class="accordion-content">
+          <p class="content-text">{{ comoSeUsa }}</p>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+  </div>
+
+  <!-- Disclaimer médico -->
+  <div class="disclaimer-section" *ngIf="descripcionGeneral">
+    <ion-card class="disclaimer-card">
+      <ion-card-content>
+        <div class="disclaimer-content">
+          <ion-icon name="shield-checkmark" class="disclaimer-icon"></ion-icon>
+          <div class="disclaimer-text">
+            <p><strong>Aviso Importante:</strong> Esta información es solo para fines educativos. Siempre consulte con un profesional de la salud antes de tomar cualquier medicamento.</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+

@@ -1,0 +1,41 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="usuario" [routerLink]="'/principal/usuario'">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>{{ 'Usuario' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="analisis" [routerLink]="'/principal/analisis'">
+      <ion-icon name="pulse-outline"></ion-icon>
+      <ion-label>{{ 'Analisis' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <!--
+    <ion-tab-button tab="detalles" [routerLink]="'/principal/detalles'">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      <ion-label>{{ 'Detalles' | translate }}</ion-label>
+    </ion-tab-button>
+    -->
+
+    <ion-tab-button tab="dashboard" [routerLink]="'/principal/dashboard'">
+      <ion-icon name="easel-outline"></ion-icon>
+      <ion-label>{{ 'Dashboard' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="diagnostico" [routerLink]="'/principal/diagnostico'">  
+      <ion-icon name="medical-outline"></ion-icon>
+      <ion-label>{{ 'Diagnóstico' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="cita" [routerLink]="'/principal/cita'">  
+      <ion-icon name="medical-outline"></ion-icon>
+      <ion-label>{{ 'Cita' | translate }}</ion-label>
+    </ion-tab-button>
+    
+  
+    <ion-tab-button tab="resena" [routerLink]="'/principal/resena'">
+      <ion-icon name="book-outline"></ion-icon>
+      <ion-label>{{ 'Reseña' | translate }}</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

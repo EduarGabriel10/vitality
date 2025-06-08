@@ -1,0 +1,154 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Horarios de Atención</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Formulario para crear horario -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="calendar-outline"></ion-icon>
+        Nuevo Horario
+      </ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <form (ngSubmit)="crearHorario()">
+        <!-- Fecha -->
+        <ion-item lines="none" class="form-item">
+          <ion-label position="stacked" color="primary">
+            <ion-icon name="calendar" slot="start"></ion-icon>
+            Fecha del horario
+          </ion-label>
+          <ion-datetime
+            [(ngModel)]="fechaBase"
+            presentation="date"
+            name="fechaBase"
+            placeholder="Selecciona una fecha"
+            [min]="fechaMinima"
+            fill="outline">
+          </ion-datetime>
+        </ion-item>
+
+        <!-- Horarios -->
+        <ion-item lines="none" class="form-item">
+          <ion-label position="stacked" color="primary">
+            <ion-icon name="time-outline" slot="start"></ion-icon>
+            Horario de atención
+          </ion-label>
+        </ion-item>
+
+        <ion-grid class="horario-grid">
+          <ion-row class="ion-align-items-center">
+            <ion-col size="5">
+              <ion-item fill="outline">
+                <ion-label position="floating">Hora inicio</ion-label>
+                <ion-datetime
+                  [(ngModel)]="horaInicio"
+                  presentation="time"
+                  name="horaInicio"
+                  placeholder="08:00">
+                </ion-datetime>
+              </ion-item>
+            </ion-col>
+            
+            <ion-col size="2" class="ion-text-center">
+              <ion-icon name="remove-outline" color="medium"></ion-icon>
+            </ion-col>
+            
+            <ion-col size="5">
+              <ion-item fill="outline">
+                <ion-label position="floating">Hora fin</ion-label>
+                <ion-datetime
+                  [(ngModel)]="horaFin"
+                  presentation="time"
+                  name="horaFin"
+                  placeholder="17:00">
+                </ion-datetime>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <!-- Botón de guardar -->
+        <ion-button 
+          expand="block" 
+          type="submit" 
+          color="success"
+          class="ion-margin-top"
+          [disabled]="!fechaBase || !horaInicio || !horaFin">
+          <ion-icon name="save-outline" slot="start"></ion-icon>
+          Guardar Horario
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Mensaje de error -->
+  <ion-item *ngIf="error" color="danger" lines="none" class="error-message">
+    <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+    <ion-label>{{ error }}</ion-label>
+  </ion-item>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando horarios...</p>
+  </div>
+
+  <!-- Lista de horarios existentes -->
+  <ion-card *ngIf="horarios.length && !isLoading">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="list-outline"></ion-icon>
+        Horarios Registrados
+      </ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content class="ion-no-padding">
+      <ion-list>
+        <ion-item *ngFor="let horario of horarios; let i = index" 
+                  [class.item-alternate]="i % 2 === 1">
+          <ion-avatar slot="start">
+            <ion-icon name="person-circle-outline" size="large"></ion-icon>
+          </ion-avatar>
+          
+          <ion-label>
+            <h2>
+              <ion-text color="primary">
+                {{ horario.medico?.nombre || 'Doctor' }}
+              </ion-text>
+            </h2>
+            <h3>
+              <ion-icon name="calendar-outline" size="small"></ion-icon>
+              {{ horario.diaSemana }}
+            </h3>
+            <p>
+              <ion-icon name="time-outline" size="small"></ion-icon>
+              {{ formatearHora(horario.horaInicio) }} - {{ formatearHora(horario.horaFin) }}
+            </p>
+          </ion-label>
+
+          <ion-button 
+            fill="clear" 
+            slot="end" 
+            color="danger"
+            (click)="eliminarHorario(horario.id)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Mensaje cuando no hay horarios -->
+  <ion-card *ngIf="!horarios.length && !isLoading">
+    <ion-card-content class="empty-state">
+      <ion-icon name="calendar-clear-outline" size="large" color="medium"></ion-icon>
+      <h3>No hay horarios registrados</h3>
+      <p>Crea tu primer horario de atención usando el formulario de arriba.</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

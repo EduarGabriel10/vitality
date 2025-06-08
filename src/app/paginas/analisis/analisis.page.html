@@ -1,0 +1,150 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Síntomas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- AI Model Selection -->
+  <div class="ai-model-selector" *ngIf="showModelSelection">
+    <div class="model-option" (click)="selectAIModel('gemini-1.5-flash')" [class.selected]="selectedAIModel === 'gemini-1.5-flash'">
+      <ion-icon name="flash"></ion-icon>
+      <span>Gemini 1.5 Flash</span>
+      <small>Rápido y preciso</small>
+    </div>
+    <div class="model-option" (click)="selectAIModel('gemini-2.5-flash')" [class.selected]="selectedAIModel === 'gemini-2.5-flash'">
+      <ion-icon name="rocket"></ion-icon>
+      <span>Gemini 2.5 Flash</span>
+      <small>Más avanzado</small>
+    </div>
+  </div>
+
+  <!-- Barra de progreso -->
+  <div class="progress-container">
+    <div class="progress-bar" [style.width.%]="progress"></div>
+  </div>
+  
+  <!-- Selected Model Indicator -->
+  <div class="selected-model" (click)="toggleModelSelection()">
+    <ion-icon name="color-wand"></ion-icon>
+    <span>Modelo: {{ selectedAIModel === 'gemini-1.5-flash' ? 'Gemini 1.5 Flash' : 'Gemini 2.5 Flash' }}</span>
+    <ion-icon [name]="showModelSelection ? 'chevron-up' : 'chevron-down'"></ion-icon>
+  </div>
+
+  <!-- Tarjeta de pregunta -->
+  <div class="question-card">
+    <!-- Sección de la pregunta -->
+    <div class="question-section" *ngIf="currentQuestion?.section">
+      {{ currentQuestion.section }}
+    </div>
+    
+    <h2 class="question-text">{{ currentQuestion.text }}</h2>
+
+    <!-- Si es de tipo texto (por ejemplo, la edad) -->
+    <div *ngIf="currentQuestion?.responseType === 'text'; else optionsTemplate">
+      <ion-item>
+        <ion-label position="floating">Ingrese su edad (opcional)</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="currentQuestion.answer"
+          min="0"
+          max="120"
+          placeholder="Ej: 30">
+        </ion-input>
+      </ion-item>
+    </div>
+
+    <!-- Plantilla para otras opciones -->
+    <ng-template #optionsTemplate>
+
+      <!-- Si es de tipo directOptions (solo opciones, sin Sí/No) -->
+      <div *ngIf="currentQuestion.responseType === 'directOptions'; else yesNoBlock">
+        <div class="answer-options">
+          <div class="option"
+               *ngFor="let option of currentQuestion.detailOptions"
+               (click)="selectAnswer(option)"
+               [ngClass]="{'selected-detail': currentQuestion.answer === option}">
+            <ion-icon name="checkmark-circle" color="primary"></ion-icon>
+            <span>{{ option }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloque normal con Sí / No / No lo sé -->
+      <ng-template #yesNoBlock>
+        <div class="answer-options">
+          <div 
+            class="option"
+            (click)="selectAnswer('Sí')"
+            [ngClass]="{'selected-yes': currentQuestion.answer === 'Sí'}">
+            <ion-icon name="checkmark" color="success"></ion-icon>
+            <span>Sí</span>
+          </div>
+        
+          <div 
+            class="option"
+            (click)="selectAnswer('No')"
+            [ngClass]="{'selected-no': currentQuestion.answer === 'No'}">
+            <ion-icon name="close" color="danger"></ion-icon>
+            <span>No</span>
+          </div>
+        
+          <div 
+            class="option"
+            (click)="selectAnswer('No lo sé')"
+            [ngClass]="{'selected-dontknow': currentQuestion.answer === 'No lo sé'}">
+            <ion-icon name="help-circle" color="medium"></ion-icon>
+            <span>No lo sé</span>
+          </div>
+        </div>
+
+        <!-- Opciones adicionales cuando se responde "Sí" -->
+        <div class="additional-info-card"
+            *ngIf="currentQuestion.answer === 'Sí' && currentQuestion.responseType === 'yesnodetail'">
+          <h2>Seleccione una opción:</h2>
+
+          <div *ngIf="currentQuestion.detailOptions?.length; else fallbackTextarea">
+            <div class="option"
+                 *ngFor="let option of currentQuestion.detailOptions"
+                 (click)="selectDetailOption(option)"
+                 [ngClass]="{'selected-detail': currentQuestion.additionalInfo === option}">
+              <ion-icon name="ellipse-outline" 
+                        [name]="currentQuestion.additionalInfo === option ? 'checkmark-circle' : 'ellipse-outline'"
+                        color="primary"></ion-icon>
+              <span>{{ option }}</span>
+            </div>
+          </div>
+
+          <!-- Fallback si no se definieron detailOptions -->
+          <ng-template #fallbackTextarea>
+            <ion-item>
+              <ion-textarea
+                [(ngModel)]="currentQuestion.additionalInfo"
+                placeholder="Escriba aquí detalles adicionales sobre su síntoma..."
+                rows="4">
+              </ion-textarea>
+            </ion-item>
+          </ng-template>
+        </div>
+      </ng-template>
+    </ng-template>
+
+    <!-- Botones de navegación -->
+    <div class="navigation-buttons">
+      <ion-button expand="block" fill="outline" color="medium" (click)="goToPreviousQuestion()" [disabled]="currentQuestionIndex === 0">
+        <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+        Atrás
+      </ion-button>
+
+      <ion-button expand="block" color="primary" (click)="goToNextQuestion()"
+        [disabled]="
+          !currentQuestion.answer ||
+          (currentQuestion.responseType === 'yesnodetail' && currentQuestion.answer === 'Sí' && !currentQuestion.additionalInfo)
+        ">
+        Siguiente
+        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+
+</ion-content>

@@ -1,0 +1,144 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Gestión de Citas</ion-title>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="segmentoSeleccionado" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="horarios">
+        <ion-label>Horarios de Atención</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="citas">
+        <ion-label>Citas Agendadas</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <!-- Vista de Horarios -->
+  <div *ngIf="segmentoSeleccionado === 'horarios'" class="stories-container">
+    <div class="story" *ngFor="let horario of horarios">
+      <div class="status-indicator" [class.available]="tieneSlotsDisponibles(horario)" [class.unavailable]="!tieneSlotsDisponibles(horario)">
+        <ion-icon [name]="tieneSlotsDisponibles(horario) ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+      </div>
+
+      <div class="story-avatar" (click)="verDetalleHorario(horario)">
+        <ion-avatar>
+          <ion-icon name="medical" class="doctor-icon"></ion-icon>
+        </ion-avatar>
+      </div>
+
+      <div class="story-content" (click)="verDetalleHorario(horario)">
+        <div class="doctor-info">
+          <span class="label">Médico:</span>
+          <h3>{{ horario.medico?.nombre || 'No asignado' }}</h3>
+        </div>
+
+        <div class="specialty">
+          <span class="label">Especialidad:</span>
+          <p>{{ horario.medico?.especialidad || 'No especificada' }}</p>
+        </div>
+
+        <div class="schedule-details">
+          <div class="time">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ horario.horaInicio | date: 'shortTime' }} - {{ horario.horaFin | date: 'shortTime' }}</span>
+          </div>
+
+          <div class="day">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ horario.diaSemana || 'Día no especificado' }}</span>
+          </div>
+
+          <div class="date">
+            <ion-icon name="today-outline"></ion-icon>
+            <span>{{ horario.horaInicio | date: 'mediumDate' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="availability" [class.available]="tieneSlotsDisponibles(horario)">
+          {{ tieneSlotsDisponibles(horario) ? 'Disponible' : 'No disponible' }}
+        </div>
+        <ion-button 
+          *ngIf="tieneSlotsDisponibles(horario)"
+          (click)="mostrarSlotsDisponibles(horario); $event.stopPropagation()"
+          expand="block" 
+          color="primary"
+          class="schedule-btn"
+          size="small">
+          <ion-icon slot="start" name="calendar"></ion-icon>
+          Agendar Cita
+        </ion-button>
+      </div>
+    </div>
+
+    <div *ngIf="horarios.length === 0" class="no-appointments">
+      <ion-icon name="calendar-clear-outline"></ion-icon>
+      <h3>No hay horarios disponibles</h3>
+      <p>Por favor, intente más tarde</p>
+    </div>
+  </div>
+
+  <!-- Vista de Citas Agendadas -->
+  <div *ngIf="segmentoSeleccionado === 'citas'" class="appointments-container">
+    <div *ngIf="citas.length > 0" class="appointments-list">
+      <div *ngFor="let cita of citas" class="appointment-card">
+        <div class="appointment-header">
+          <ion-avatar class="doctor-avatar">
+            <ion-icon name="medical" class="doctor-icon"></ion-icon>
+          </ion-avatar>
+          <div class="doctor-info">
+            <h3>{{ cita.medico?.nombre || 'Médico no especificado' }}</h3>
+            <p class="specialty">{{ cita.medico?.especialidad || 'Especialidad no especificada' }}</p>
+          </div>
+          <div class="appointment-status" [class.pending]="cita.estado === 'PENDIENTE'"
+                                     [class.completed]="cita.estado === 'COMPLETADA'"
+                                     [class.cancelled]="cita.estado === 'CANCELADA'">
+            {{ cita.estado }}
+          </div>
+        </div>
+        
+        <div class="appointment-details">
+          <div class="detail-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ cita.fechaHora | date: 'fullDate' }}</span>
+          </div>
+          <div class="detail-item">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ cita.slot?.horaInicio | date: 'shortTime' }} - {{ cita.slot?.horaFin | date: 'shortTime' }}</span>
+          </div>
+          <div class="detail-item">
+            <ion-icon name="calendar-number-outline"></ion-icon>
+            <span>{{ cita.slot?.horario?.diaSemana || 'Día no especificado' }}</span>
+          </div>
+          <div class="detail-item">
+            <ion-icon name="time"></ion-icon>
+            <span>Duración: {{ cita.slot?.horario?.duracionCita || '--' }} min</span>
+          </div>
+        </div>
+        
+        <div class="appointment-actions">
+          <ion-button *ngIf="cita.estado === 'PENDIENTE' || cita.estado === 'ACEPTADA'" fill="outline" color="danger" size="small" (click)="cancelarCita(cita)">
+            <ion-icon slot="start" name="close-circle"></ion-icon>
+            Cancelar
+          </ion-button>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="citas.length === 0" class="no-appointments">
+      <ion-icon name="calendar-clear-outline"></ion-icon>
+      <h3>No hay citas agendadas</h3>
+      <p>No tienes citas programadas en este momento</p>
+      <ion-button (click)="segmentoSeleccionado = 'horarios'" fill="outline" color="primary" class="mt-3">
+        <ion-icon slot="start" name="add-circle"></ion-icon>
+        Agendar Cita
+      </ion-button>
+    </div>
+  </div>
+
+</ion-content>
