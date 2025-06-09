@@ -1,476 +1,710 @@
-// Variables
+// Estilos para Historial Médico con soporte para modo claro/oscuro
+
+// Variables CSS personalizadas para temas
 :root {
-    --historial-bg: #f8f9fa;
-    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
-    --border-radius: 16px;
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
+  // Tema claro
+  --background-primary: #ffffff;
+  --background-secondary: #f8f9fa;
+  --background-tertiary: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  --border-color: #dee2e6;
+  --shadow-light: rgba(0, 0, 0, 0.08);
+  --shadow-medium: rgba(0, 0, 0, 0.12);
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+// Tema oscuro
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-primary: #1a1a1a;
+    --background-secondary: #2d2d2d;
+    --background-tertiary: #404040;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --text-muted: #8a8a8a;
+    --border-color: #404040;
+    --shadow-light: rgba(0, 0, 0, 0.3);
+    --shadow-medium: rgba(0, 0, 0, 0.5);
+    --gradient-primary: linear-gradient(135deg, #4a69bd 0%, #5f3a87 100%);
+    --gradient-card: linear-gradient(145deg, #2d2d2d 0%, #1a1a1a 100%);
   }
-  
-  // Layout principal
-  ion-content {
-    --background: var(--historial-bg);
-    --padding-start: 16px;
-    --padding-end: 16px;
-    --padding-top: 16px;
-    --padding-bottom: 32px;
-  }
-  
-  // Header personalizado
-  ion-header {
-    ion-toolbar {
-      --background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-primary-shade));
-      
-      ion-title {
-        font-size: 20px;
-        font-weight: 600;
-      }
-      
-      ion-button {
-        font-size: 14px;
-        font-weight: 500;
-        
-        ion-label {
-          margin-left: var(--spacing-xs);
-        }
-      }
-    }
-  }
-  
-  // Estadísticas
-  .stats-container {
-    margin-bottom: var(--spacing-xl);
+}
+
+// Estilos específicos para el body en modo oscuro de Ionic
+body.dark {
+  --background-primary: #1a1a1a;
+  --background-secondary: #2d2d2d;
+  --background-tertiary: #404040;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-muted: #8a8a8a;
+  --border-color: #404040;
+  --shadow-light: rgba(0, 0, 0, 0.3);
+  --shadow-medium: rgba(0, 0, 0, 0.5);
+  --gradient-primary: linear-gradient(135deg, #4a69bd 0%, #5f3a87 100%);
+  --gradient-card: linear-gradient(145deg, #2d2d2d 0%, #1a1a1a 100%);
+}
+
+// Header personalizado
+ion-header {
+  ion-toolbar {
+    --background: var(--gradient-primary);
+    --color: white;
     
-    .stats-card {
-      --background: white;
-      margin: 0 0 var(--spacing-md) 0;
-      border-radius: var(--border-radius);
-      box-shadow: var(--card-shadow);
-      
-      ion-card-content {
-        padding: var(--spacing-lg);
-      }
-    }
-    
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--spacing-md);
+    ion-title {
+      font-weight: 600;
+      font-size: 1.2rem;
     }
     
-    .stat-item {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
+    ion-button {
+      --color: white;
+      font-weight: 500;
       
       ion-icon {
-        font-size: 24px;
-        padding: var(--spacing-sm);
-        background: rgba(var(--ion-color-primary-rgb), 0.1);
-        border-radius: 12px;
-      }
-      
-      h3 {
-        font-size: 24px;
-        font-weight: 700;
-        margin: 0;
-        color: var(--ion-color-dark);
-      }
-      
-      p {
-        font-size: 12px;
-        color: var(--ion-color-medium);
-        margin: 0;
-        font-weight: 500;
+        margin-right: 4px;
       }
     }
   }
+}
+
+// Contenedor principal
+ion-content {
+  --background: var(--background-secondary);
   
-  // Container de consultas
-  .consultas-container {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    margin: 16px 0 32px;
+  .ion-padding {
+    padding: 16px;
   }
+}
+
+// Contenedor de estadísticas
+.stats-container {
+  margin-bottom: 24px;
   
-  // Cards de consulta
-  .consulta-card {
-    --background: white;
-    margin: 0 0 24px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--card-shadow);
-    transition: all 0.3s ease;
+  .stats-card {
+    background: var(--gradient-card);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px var(--shadow-light);
+    border: 1px solid var(--border-color);
+    margin: 0;
     overflow: hidden;
+    transition: all 0.3s ease;
     
     &:hover {
-      box-shadow: var(--card-shadow-hover);
       transform: translateY(-2px);
+      box-shadow: 0 8px 25px var(--shadow-medium);
     }
     
-    ion-card-content > div:not(:last-child) {
-      margin-bottom: 28px;
-    }
-    
-    .gravedad-section {
-      margin-bottom: 32px;
-    }
-    
-    .diagnostico-section {
-      margin-bottom: 28px;
-    }
-    
-    .recomendaciones-section {
-      margin-bottom: 28px;
-    }
-    
-    .diagnostico-medico-section {
-      margin-bottom: 16px;
+    ion-card-content {
+      padding: 20px;
     }
   }
   
-  // Header de consulta
-  .consulta-header {
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 20px;
+  }
+  
+  .stat-item {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: var(--spacing-lg) var(--spacing-lg);
-    background: linear-gradient(135deg, rgba(var(--ion-color-primary-rgb), 0.05), rgba(var(--ion-color-primary-rgb), 0.02));
-    border-bottom: 1px solid rgba(var(--ion-color-light-rgb), 0.8);
-    margin-bottom: var(--spacing-sm);
+    align-items: center;
+    gap: 12px;
     
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      
-      .delete-button {
-        --padding-start: 4px;
-        --padding-end: 4px;
-        --padding-top: 4px;
-        --padding-bottom: 4px;
-        margin: 0;
-        --ripple-color: var(--ion-color-danger-shade);
-        
-        ion-icon {
-          font-size: 20px;
-        }
-        
-        &:hover {
-          --background: rgba(var(--ion-color-danger-rgb), 0.1);
-        }
-      }
+    ion-icon {
+      font-size: 2rem;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(var(--ion-color-primary-rgb), 0.1);
     }
     
-    .fecha-info {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      
-      ion-icon {
-        font-size: 20px;
-        padding: var(--spacing-xs);
-        background: rgba(var(--ion-color-primary-rgb), 0.1);
-        border-radius: 8px;
-      }
-      
-      h2 {
-        font-size: 16px;
-        font-weight: 600;
+    div {
+      h3 {
         margin: 0;
-        color: var(--ion-color-dark);
-        text-transform: capitalize;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1;
       }
       
       p {
-        font-size: 12px;
-        color: var(--ion-color-medium);
-        margin: 0;
+        margin: 4px 0 0 0;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
         font-weight: 500;
       }
     }
+  }
+}
+
+// Contenedor de consultas
+.consultas-container {
+  .nuevo-mes {
+    position: relative;
+    
+    // Indicador de mes
+    &::before {
+      content: attr(data-mes);
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin: 24px 0 12px 0;
+      padding: 8px 16px;
+      background: var(--background-tertiary);
+      border-radius: 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+  }
+}
+
+// Tarjetas de consulta
+.consulta-card {
+  background: var(--background-primary);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px var(--shadow-light);
+  border: 1px solid var(--border-color);
+  margin: 0 0 16px 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow-medium);
+  }
+}
+
+// Header de consulta
+.consulta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 20px 0 20px;
+  
+  .fecha-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    
+    ion-icon {
+      font-size: 1.3rem;
+      margin-top: 2px;
+      padding: 8px;
+      border-radius: 8px;
+      background: rgba(var(--ion-color-primary-rgb), 0.1);
+    }
+    
+    div {
+      h2 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        line-height: 1.3;
+      }
+      
+      p {
+        margin: 2px 0 0 0;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+    }
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     
     .estado-badge {
-      font-size: 11px;
+      font-size: 0.75rem;
       font-weight: 600;
       padding: 6px 12px;
-      border-radius: 20px;
+      border-radius: 12px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+    }
+    
+    .delete-button {
+      --color: var(--ion-color-danger);
       margin: 0;
+      
+      ion-icon {
+        font-size: 1.1rem;
+      }
+      
+      &:hover {
+        --background: rgba(var(--ion-color-danger-rgb), 0.1);
+      }
     }
   }
+}
+
+// Contenido de la tarjeta
+ion-card-content {
+  padding: 0 20px 20px 20px;
+}
+
+// Información del paciente
+.paciente-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+  padding: 12px 16px;
+  background: var(--background-secondary);
+  border-radius: 12px;
+  border-left: 4px solid var(--ion-color-primary);
   
-  // Content de la card
-  ion-card-content {
-    padding: var(--spacing-xl) var(--spacing-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xl);
+  ion-icon {
+    font-size: 1.1rem;
   }
   
-  // Información del paciente
-  .paciente-info {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm) var(--spacing-md);
-    background: rgba(var(--ion-color-light-rgb), 0.3);
+  span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+}
+
+// Secciones comunes
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  
+  ion-icon {
+    font-size: 1.2rem;
+    padding: 6px;
+    border-radius: 6px;
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+  }
+  
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+}
+
+// Sección de diagnóstico
+.diagnostico-section {
+  margin: 20px 0;
+  
+  .diagnostico-content {
+    background: var(--background-secondary);
     border-radius: 12px;
+    padding: 16px;
     border-left: 4px solid var(--ion-color-primary);
     
-    ion-icon {
-      font-size: 16px;
-    }
-    
-    span {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--ion-color-dark);
-    }
-  }
-  
-  // Secciones generales
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
-    
-    ion-icon {
-      font-size: 18px;
-      padding: 6px;
-      background: rgba(var(--ion-color-primary-rgb), 0.1);
-      border-radius: 8px;
-    }
-    
-    h3 {
-      font-size: 16px;
-      font-weight: 600;
-      margin: 0;
-      color: var(--ion-color-dark);
-    }
-  }
-  
-  // Sección de diagnóstico
-  .diagnostico-section {
-    .diagnostico-content {
-      padding-left: var(--spacing-lg);
-    }
-    
     .diagnostico-text {
-      font-size: 15px;
-      line-height: 1.6;
-      color: var(--ion-color-dark);
-      margin-bottom: var(--spacing-md);
-      padding: var(--spacing-md);
-      background: rgba(var(--ion-color-primary-rgb), 0.02);
-      border-radius: 12px;
-      border-left: 3px solid var(--ion-color-primary);
+      margin: 0 0 16px 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+  }
+}
+
+// Indicador de confianza
+.confianza-indicator {
+  .confianza-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    
+    .confianza-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
     }
     
-    .confianza-indicator {
-      .confianza-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: var(--spacing-sm);
-        
-        .confianza-label {
-          font-size: 13px;
-          color: var(--ion-color-medium);
-          font-weight: 500;
-        }
-        
-        .confianza-value {
-          font-size: 14px;
-          font-weight: 600;
-          color: var(--ion-color-dark);
-        }
-      }
-      
-      .confianza-bar {
-        height: 6px;
-        border-radius: 3px;
-      }
+    .confianza-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
     }
   }
   
-  // Sección de gravedad
-  .gravedad-section {
-    .gravedad-content {
-      padding-left: var(--spacing-lg);
-    }
-    
-    .gravedad-indicator {
-      padding: var(--spacing-md);
-      background: rgba(var(--ion-color-warning-rgb), 0.05);
-      border-radius: 12px;
-      border-left: 3px solid var(--ion-color-warning);
-      
-      .gravedad-text {
-        display: block;
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--ion-color-dark);
-        margin-bottom: var(--spacing-sm);
-      }
-      
-      .gravedad-bar {
-        height: 6px;
-        border-radius: 3px;
-      }
-    }
+  .confianza-bar {
+    height: 6px;
+    border-radius: 3px;
+    --progress-background: var(--background-tertiary);
+  }
+}
+
+// Sección de gravedad
+.gravedad-section {
+  margin: 20px 0;
+  
+  .gravedad-content {
+    background: var(--background-secondary);
+    border-radius: 12px;
+    padding: 16px;
+    border-left: 4px solid var(--ion-color-warning);
   }
   
-  // Sección de recomendaciones
-  .recomendaciones-section {
-    .recomendaciones-grid {
-      display: grid;
-      gap: var(--spacing-sm);
-      padding-left: var(--spacing-lg);
+  .gravedad-indicator {
+    .gravedad-text {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
     }
+    
+    .gravedad-bar {
+      height: 6px;
+      border-radius: 3px;
+      --progress-background: var(--background-tertiary);
+    }
+  }
+}
+
+// Sección de recomendaciones
+.recomendaciones-section {
+  margin: 20px 0;
+  
+  .recomendaciones-grid {
+    display: grid;
+    gap: 8px;
     
     .recomendacion-card {
       display: flex;
       align-items: flex-start;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-md);
-      background: rgba(var(--ion-color-success-rgb), 0.05);
-      border-radius: 12px;
+      gap: 10px;
+      padding: 12px 16px;
+      background: var(--background-secondary);
+      border-radius: 10px;
       border-left: 3px solid var(--ion-color-success);
       transition: all 0.2s ease;
       
       &:hover {
-        background: rgba(var(--ion-color-success-rgb), 0.08);
+        background: var(--background-tertiary);
+        transform: translateX(4px);
       }
       
       ion-icon {
-        margin-top: 2px;
+        font-size: 1rem;
+        margin-top: 1px;
         flex-shrink: 0;
       }
       
       span {
-        font-size: 14px;
-        line-height: 1.5;
-        color: var(--ion-color-dark);
-      }
-    }
-  }
-  
-  // Sección de diagnóstico médico
-  .diagnostico-medico-section {
-    .diagnostico-medico-content {
-      padding: var(--spacing-md);
-      padding-left: var(--spacing-xl);
-      background: rgba(var(--ion-color-success-rgb), 0.05);
-      border-radius: 12px;
-      border-left: 3px solid var(--ion-color-success);
-      
-      p {
-        font-size: 15px;
-        line-height: 1.6;
-        color: var(--ion-color-dark);
-        margin: 0;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: var(--text-primary);
         font-weight: 500;
       }
     }
   }
+}
+
+// Sección de diagnóstico médico profesional
+.diagnostico-medico-section {
+  margin: 20px 0;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(var(--ion-color-success-rgb), 0.05) 0%, rgba(var(--ion-color-success-rgb), 0.02) 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(var(--ion-color-success-rgb), 0.2);
   
-  // Estado vacío
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: var(--spacing-xl) var(--spacing-md);
-    min-height: 50vh;
+  .diagnostico-medico-content {
+    p {
+      margin: 0 0 12px 0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      strong {
+        color: var(--ion-color-success);
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+// Estado vacío
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+  
+  h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  
+  p {
+    margin: 0 0 24px 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  
+  ion-button {
+    --border-radius: 12px;
+    font-weight: 600;
     
     ion-icon {
-      font-size: 64px;
-      margin-bottom: var(--spacing-md);
-      opacity: 0.6;
+      font-size: 1.2rem;
+      margin: 0;
     }
+  }
+}
+
+// Animaciones
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Aplicar animación a las tarjetas
+.consulta-card {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .consulta-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
     
-    h2 {
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--ion-color-dark);
-      margin-bottom: var(--spacing-sm);
-    }
-    
-    p {
-      font-size: 14px;
-      color: var(--ion-color-medium);
-      margin-bottom: var(--spacing-lg);
-      max-width: 300px;
-    }
-    
-    ion-button {
-      --border-radius: 12px;
-      font-weight: 500;
+    .header-actions {
+      width: 100%;
+      justify-content: space-between;
     }
   }
   
-  // Responsive design
-  @media (min-width: 768px) {
-    ion-content {
-      --padding-start: 10%;
-      --padding-end: 10%;
+  .fecha-info {
+    div h2 {
+      font-size: 1rem;
     }
-    
-    .stats-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .recomendaciones-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  }
+}
+
+@media (max-width: 480px) {
+  ion-content .ion-padding {
+    padding: 12px;
   }
   
-  @media (min-width: 1024px) {
-    ion-content {
-      --padding-start: 15%;
-      --padding-end: 15%;
+  .stats-card ion-card-content {
+    padding: 16px;
+  }
+  
+  .consulta-header {
+    padding: 16px 16px 0 16px;
+  }
+  
+  ion-card-content {
+    padding: 0 16px 16px 16px;
+  }
+}
+
+// Mejoras de accesibilidad
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// Estilos para funcionalidades adicionales
+
+// Botón de ordenar en el header
+.order-button {
+  font-size: 0.85rem;
+  
+  ion-icon {
+    margin-right: 4px;
+    font-size: 1rem;
+  }
+}
+
+// Loading container
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// Vista previa de consulta (siempre visible)
+.consulta-preview {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  
+  .paciente-info {
+    margin: 0 0 12px 0;
+  }
+  
+  .diagnostico-preview {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    
+    ion-icon {
+      font-size: 1.1rem;
+      margin-top: 2px;
+      flex-shrink: 0;
     }
     
-    .consultas-container {
-      gap: var(--spacing-xl);
+    span {
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: var(--text-secondary);
     }
   }
-  
-  // Animaciones
-  @keyframes slideInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+}
+
+// Detalles expandibles
+.consulta-details {
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+// Tarjeta expandida
+.consulta-card.expanded {
+  .consulta-preview {
+    border-bottom-color: transparent;
   }
+}
+
+// Botón de expansión
+.expand-button {
+  margin: 0;
   
-  .consulta-card {
-    animation: slideInUp 0.3s ease forwards;
+  ion-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
   }
-  
-  // Print styles
-  @media print {
-    ion-header,
-    .stats-container {
-      display: none;
-    }
+}
+
+.consulta-card.expanded .expand-button ion-icon {
+  transform: rotate(180deg);
+}
+
+// Botón flotante personalizado
+ion-fab {
+  ion-fab-button {
+    --background: var(--gradient-primary);
+    --box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.4);
     
-    .consulta-card {
-      box-shadow: none;
-      border: 1px solid #ddd;
-      page-break-inside: avoid;
-      margin-bottom: var(--spacing-md);
+    &:hover {
+      --box-shadow: 0 6px 20px rgba(var(--ion-color-primary-rgb), 0.6);
     }
   }
+}
+
+// Mejora del botón de nueva consulta
+.new-consultation-btn {
+  --border-radius: 25px;
+  font-weight: 600;
+  padding: 12px 24px;
+  
+  ion-icon {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+}
+
+// Tercera estadística
+.stats-grid {
+  .stat-item:nth-child(3) {
+    ion-icon {
+      background: rgba(var(--ion-color-warning-rgb), 0.1);
+    }
+  }
+}
+
+// Skeleton loading personalizado
+ion-skeleton-text {
+  --background: var(--background-tertiary);
+  --background-rgb: var(--background-tertiary);
+}
+
+// Mejoras de accesibilidad para elementos interactivos
+.consulta-header {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-radius: 16px 16px 0 0;
+  
+  &:hover {
+    background: rgba(var(--ion-color-primary-rgb), 0.02);
+  }
+  
+  &:focus {
+    outline: 2px solid var(--ion-color-primary);
+    outline-offset: -2px;
+  }
+}
+
+// Estados de hover mejorados para dispositivos táctiles
+@media (hover: hover) {
+  .consulta-card:hover,
+  .stats-card:hover,
+  .recomendacion-card:hover {
+    cursor: pointer;
+  }
+  
+  .consulta-header:hover {
+    background: rgba(var(--ion-color-primary-rgb), 0.03);
+  }
+}
+
+// Soporte para contraste alto
+@media (prefers-contrast: high) {
+  :root {
+    --border-color: #000000;
+    --shadow-light: rgba(0, 0, 0, 0.3);
+    --shadow-medium: rgba(0, 0, 0, 0.5);
+  }
+  
+  body.dark {
+    --border-color: #ffffff;
+  }
+}

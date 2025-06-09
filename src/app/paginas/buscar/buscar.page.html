@@ -8,7 +8,6 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <!-- Sección de búsqueda mejorada -->
   <div class="search-section">
     <div class="search-header">
       <ion-icon name="medical" class="search-icon"></ion-icon>
@@ -45,7 +44,6 @@
     </div>
   </div>
 
-  <!-- Resultado principal mejorado -->
   <div class="result-section" *ngIf="descripcionGeneral">
     <ion-card class="main-result-card">
       <ion-card-header>
@@ -60,7 +58,6 @@
     </ion-card>
   </div>
 
-  <!-- Secciones expandibles mejoradas -->
   <div class="details-section" *ngIf="descripcionGeneral">
     <h4 class="section-title">Información Detallada</h4>
     
@@ -119,7 +116,6 @@
     </ion-accordion-group>
   </div>
 
-  <!-- Disclaimer médico -->
   <div class="disclaimer-section" *ngIf="descripcionGeneral">
     <ion-card class="disclaimer-card">
       <ion-card-content>

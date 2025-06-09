@@ -5,8 +5,8 @@
     </ion-buttons>
     <ion-title>Historial Médico</ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="clear" (click)="alternarOrden()">
-        <ion-icon name="swap-vertical-outline" slot="start"></ion-icon>
+      <ion-button fill="clear" (click)="alternarOrden()" class="order-button">
+        <ion-icon [name]="ordenDescendente ? 'arrow-down-outline' : 'arrow-up-outline'" slot="start"></ion-icon>
         <ion-label>{{ ordenDescendente ? 'Recientes' : 'Antiguas' }}</ion-label>
       </ion-button>
     </ion-buttons>
@@ -15,8 +15,14 @@
 
 <ion-content class="ion-padding">
   
+  <!-- Indicador de carga -->
+  <div class="loading-container" *ngIf="cargando">
+    <ion-skeleton-text animated style="width: 100%; height: 120px; border-radius: 16px;"></ion-skeleton-text>
+    <ion-skeleton-text animated style="width: 100%; height: 200px; border-radius: 16px; margin-top: 16px;"></ion-skeleton-text>
+  </div>
+  
   <!-- Estadísticas rápidas -->
-  <div class="stats-container" *ngIf="consultas.length > 0">
+  <div class="stats-container" *ngIf="consultas.length > 0 && !cargando">
     <ion-card class="stats-card">
       <ion-card-content>
         <div class="stats-grid">
@@ -40,137 +46,158 @@
   </div>
 
   <!-- Lista de consultas -->
-  <div class="consultas-container" *ngIf="consultas.length > 0">
+  <div class="consultas-container" *ngIf="consultas.length > 0 && !cargando">
     <ng-container *ngFor="let grupo of agruparPorMes(consultas); let i = index">
       <div class="nuevo-mes" [attr.data-mes]="grupo.mes">
-        <ion-card class="consulta-card" *ngFor="let consulta of grupo.consultas; trackBy: trackByConsulta">
+        <ion-card class="consulta-card" 
+                  *ngFor="let consulta of grupo.consultas; trackBy: trackByConsulta"
+                  [class.expanded]="consulta.expanded">
       
-      <!-- Header de la consulta -->
-      <div class="consulta-header">
-        <div class="fecha-info">
-          <ion-icon name="calendar" color="primary"></ion-icon>
-          <div>
-            <h2>{{ consulta.fecha | date: 'EEEE, d MMMM y' }}</h2>
-            <p>{{ consulta.fecha | date: 'HH:mm' }}h</p>
-          </div>
-        </div>
-        <div class="header-actions">
-          <ion-badge 
-            [color]="getBadgeColor(consulta.estado)"
-            class="estado-badge">
-            {{ consulta.estado }}
-          </ion-badge>
-          <ion-button 
-            fill="clear" 
-            color="danger" 
-            (click)="eliminarConsulta(consulta.id, $event)"
-            class="delete-button">
-            <ion-icon name="trash-outline"></ion-icon>
-          </ion-button>
-        </div>
-      </div>
-
-      <ion-card-content>
-        
-        <!-- Información del paciente -->
-        <div class="paciente-info">
-          <ion-icon name="person-outline" color="medium"></ion-icon>
-          <span>Paciente de {{ consulta.edad }} años</span>
-        </div>
-
-        <!-- Diagnóstico principal -->
-        <div class="diagnostico-section">
-          <div class="section-header">
-            <ion-icon name="medical-outline" color="primary"></ion-icon>
-            <h3>Diagnóstico</h3>
-          </div>
-          <div class="diagnostico-content">
-            <p class="diagnostico-text">
-              {{ consulta.resultadoIAParsed?.diagnostico || consulta.resultadoIA || 'Sin diagnóstico disponible' }}
-            </p>
-            
-            <!-- Indicador de confianza -->
-            <div class="confianza-indicator" *ngIf="consulta.resultadoIAParsed?.probabilidad || consulta.porcentaje">
-              <div class="confianza-header">
-                <span class="confianza-label">Probabilidad</span>
-                <span class="confianza-value">{{ consulta.resultadoIAParsed?.probabilidad || consulta.porcentaje }}%</span>
+          <!-- Header de la consulta -->
+          <div class="consulta-header" (click)="toggleExpanded(consulta)">
+            <div class="fecha-info">
+              <ion-icon name="calendar" color="primary"></ion-icon>
+              <div>
+                <h2>{{ consulta.fecha | date: 'EEEE, d MMMM y' : 'es-ES' }}</h2>
+                <p>{{ consulta.fecha | date: 'HH:mm' }}h</p>
               </div>
-              <ion-progress-bar 
-                [value]="(consulta.resultadoIAParsed?.probabilidad || consulta.porcentaje) / 100"
-                [color]="getProgressBarColor(consulta.resultadoIAParsed?.probabilidad || consulta.porcentaje)"
-                class="confianza-bar">
-              </ion-progress-bar>
+            </div>
+            <div class="header-actions" (click)="$event.stopPropagation()">
+              <ion-badge 
+                [color]="getBadgeColor(consulta.estado)"
+                class="estado-badge">
+                {{ consulta.estado }}
+              </ion-badge>
+              <ion-button 
+                fill="clear" 
+                color="medium"
+                (click)="toggleExpanded(consulta)"
+                class="expand-button">
+                <ion-icon [name]="consulta.expanded ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+              </ion-button>
+              <ion-button 
+                fill="clear" 
+                color="danger" 
+                (click)="eliminarConsulta(consulta.id, $event)"
+                class="delete-button">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
             </div>
           </div>
-        </div>
 
-        <!-- Nivel de gravedad -->
-        <div class="gravedad-section" *ngIf="consulta.resultadoIAParsed?.gravedad || consulta.gravedad">
-          <div class="section-header">
-            <ion-icon name="warning-outline" [color]="getSeverityIconColor(consulta.resultadoIAParsed?.gravedad || consulta.gravedad)"></ion-icon>
-            <h3>Nivel de Gravedad</h3>
-          </div>
-          <div class="gravedad-content">
-            <div class="gravedad-indicator">
-              <span class="gravedad-text">{{ getSeverityText(consulta.resultadoIAParsed?.gravedad || consulta.gravedad) }}</span>
-              <ion-progress-bar 
-                [value]="(consulta.resultadoIAParsed?.gravedad || consulta.gravedad) / 100"
-                [color]="getSeverityColor(consulta.resultadoIAParsed?.gravedad || consulta.gravedad)"
-                class="gravedad-bar">
-              </ion-progress-bar>
+          <!-- Vista previa (siempre visible) -->
+          <div class="consulta-preview">
+            <div class="paciente-info">
+              <ion-icon name="person-outline" color="medium"></ion-icon>
+              <span>Paciente de {{ consulta.edad }} años</span>
+            </div>
+            
+            <div class="diagnostico-preview">
+              <ion-icon name="medical-outline" color="primary"></ion-icon>
+              <span>{{ (consulta.resultadoIAParsed?.diagnostico || consulta.resultadoIA || 'Sin diagnóstico disponible') | slice:0:100 }}{{ (consulta.resultadoIAParsed?.diagnostico || consulta.resultadoIA || '').length > 100 ? '...' : '' }}</span>
             </div>
           </div>
-        </div>
 
-        <!-- Recomendaciones -->
-        <div class="recomendaciones-section" *ngIf="getRecomendaciones(consulta).length > 0">
-          <div class="section-header">
-            <ion-icon name="bulb-outline" color="warning"></ion-icon>
-            <h3>Recomendaciones</h3>
-          </div>
-          <div class="recomendaciones-grid">
-            <div class="recomendacion-card" *ngFor="let rec of getRecomendaciones(consulta)">
-              <ion-icon name="checkmark-circle" color="success" size="small"></ion-icon>
-              <span>{{ rec }}</span>
-            </div>
-          </div>
-        </div>
+          <!-- Contenido expandible -->
+          <div class="consulta-details" *ngIf="consulta.expanded">
+            <ion-card-content>
 
-        <!-- Diagnóstico médico profesional -->
-        <div class="diagnostico-medico-section" *ngIf="consulta.diagnosticoMedico?.diagnostico">
-          <div class="section-header">
-            <ion-icon name="shield-checkmark-outline" color="success"></ion-icon>
-            <h3>Diagnóstico Profesional</h3>
-          </div>
-          <div class="diagnostico-medico-content">
-            <p><strong>Diagnóstico:</strong> {{ consulta.diagnosticoMedico.diagnostico }}</p>
-            <p *ngIf="consulta.diagnosticoMedico.recomendaciones">
-              <strong>Recomendaciones:</strong> {{ consulta.diagnosticoMedico.recomendaciones }}
-            </p>
-            <p *ngIf="consulta.diagnosticoMedico.comentarios">
-              <strong>Comentarios:</strong> {{ consulta.diagnosticoMedico.comentarios }}
-            </p>
-            <p *ngIf="consulta.diagnosticoMedico.fechaDiagnostico">
-              <strong>Fecha:</strong> {{ consulta.diagnosticoMedico.fechaDiagnostico | date: 'short' }}
-            </p>
-          </div>
-        </div>
+              <!-- Diagnóstico principal -->
+              <div class="diagnostico-section">
+                <div class="section-header">
+                  <ion-icon name="medical-outline" color="primary"></ion-icon>
+                  <h3>Diagnóstico Completo</h3>
+                </div>
+                <div class="diagnostico-content">
+                  <p class="diagnostico-text">
+                    {{ consulta.resultadoIAParsed?.diagnostico || consulta.resultadoIA || 'Sin diagnóstico disponible' }}
+                  </p>
+                  
+                  <!-- Indicador de confianza -->
+                  <div class="confianza-indicator" *ngIf="consulta.resultadoIAParsed?.probabilidad || consulta.porcentaje">
+                    <div class="confianza-header">
+                      <span class="confianza-label">Probabilidad</span>
+                      <span class="confianza-value">{{ consulta.resultadoIAParsed?.probabilidad || consulta.porcentaje }}%</span>
+                    </div>
+                    <ion-progress-bar 
+                      [value]="(consulta.resultadoIAParsed?.probabilidad || consulta.porcentaje) / 100"
+                      [color]="getProgressBarColor(consulta.resultadoIAParsed?.probabilidad || consulta.porcentaje)"
+                      class="confianza-bar">
+                    </ion-progress-bar>
+                  </div>
+                </div>
+              </div>
 
+              <!-- Nivel de gravedad -->
+              <div class="gravedad-section" *ngIf="consulta.resultadoIAParsed?.gravedad || consulta.gravedad">
+                <div class="section-header">
+                  <ion-icon name="warning-outline" [color]="getSeverityIconColor(consulta.resultadoIAParsed?.gravedad || consulta.gravedad)"></ion-icon>
+                  <h3>Nivel de Gravedad</h3>
+                </div>
+                <div class="gravedad-content">
+                  <div class="gravedad-indicator">
+                    <span class="gravedad-text">{{ getSeverityText(consulta.resultadoIAParsed?.gravedad || consulta.gravedad) }}</span>
+                    <ion-progress-bar 
+                      [value]="(consulta.resultadoIAParsed?.gravedad || consulta.gravedad) / 100"
+                      [color]="getSeverityColor(consulta.resultadoIAParsed?.gravedad || consulta.gravedad)"
+                      class="gravedad-bar">
+                    </ion-progress-bar>
+                  </div>
+                </div>
+              </div>
 
-          </ion-card-content>
+              <!-- Recomendaciones -->
+              <div class="recomendaciones-section" *ngIf="getRecomendaciones(consulta).length > 0">
+                <div class="section-header">
+                  <ion-icon name="bulb-outline" color="warning"></ion-icon>
+                  <h3>Recomendaciones</h3>
+                </div>
+                <div class="recomendaciones-grid">
+                  <div class="recomendacion-card" *ngFor="let rec of getRecomendaciones(consulta)">
+                    <ion-icon name="checkmark-circle" color="success" size="small"></ion-icon>
+                    <span>{{ rec }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Diagnóstico médico profesional -->
+              <div class="diagnostico-medico-section" *ngIf="consulta.diagnosticoMedico?.diagnostico">
+                <div class="section-header">
+                  <ion-icon name="shield-checkmark-outline" color="success"></ion-icon>
+                  <h3>Diagnóstico Profesional</h3>
+                </div>
+                <div class="diagnostico-medico-content">
+                  <p><strong>Diagnóstico:</strong> {{ consulta.diagnosticoMedico.diagnostico }}</p>
+                  <p *ngIf="consulta.diagnosticoMedico.recomendaciones">
+                    <strong>Recomendaciones:</strong> {{ consulta.diagnosticoMedico.recomendaciones }}
+                  </p>
+                  <p *ngIf="consulta.diagnosticoMedico.comentarios">
+                    <strong>Comentarios:</strong> {{ consulta.diagnosticoMedico.comentarios }}
+                  </p>
+                  <p *ngIf="consulta.diagnosticoMedico.fechaDiagnostico">
+                    <strong>Fecha:</strong> {{ consulta.diagnosticoMedico.fechaDiagnostico | date: 'short' : 'es-ES' }}
+                  </p>
+                </div>
+              </div>
+
+            </ion-card-content>
+          </div>
         </ion-card>
       </div>
     </ng-container>
   </div>
 
   <!-- Estado vacío -->
-  <div class="empty-state" *ngIf="consultas.length === 0">
+  <div class="empty-state" *ngIf="consultas.length === 0 && !cargando">
     <ion-icon name="document-text-outline" color="medium"></ion-icon>
     <h2>No hay consultas registradas</h2>
     <p>Tus futuras consultas médicas aparecerán aquí</p>
-    <ion-button fill="outline" routerLink="/principal/dashboard">
+    <ion-button fill="outline" routerLink="/principal/dashboard" class="new-consultation-btn">
       <ion-icon name="add" slot="start"></ion-icon>
       Nueva consulta
     </ion-button>
   </div>
+
+
+
 </ion-content>

@@ -1,30 +1,36 @@
-/* Variables para colores y sombras */
-:root {
-  --primary-color: #3880ff;
-  --success-color: #2dd36f;
-  --danger-color: #eb445a;
-  --neutral-color: #92949c;
-  --light-bg: #f8f9fa;
+/* Variables para el tema */
+:host {
+  --primary-color: var(--ion-color-primary, #3880ff);
+  --success-color: var(--ion-color-success, #2dd36f);
+  --danger-color: var(--ion-color-danger, #eb445a);
+  --neutral-color: var(--ion-color-medium, #92949c);
+  --light-bg: var(--ion-color-light, #f8f9fa);
+  --card-bg: var(--ion-card-background, #ffffff);
+  --text-color: var(--ion-text-color, #000000);
+  --text-secondary: var(--ion-text-color-step-600, #666666);
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   --transition-speed: 0.3s;
+  --surface-color: var(--ion-background-color, #f8f9fa);
+  --border-color: var(--ion-item-border-color, #e0e0e0);
 }
 
 /* Barra de progreso */
 /* AI Model Selector Styles */
 .ai-model-selector {
-  background: white;
+  background: var(--card-bg);
   margin: 10px 16px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
   overflow: hidden;
   z-index: 10;
   position: relative;
+  color: var(--text-color);
   
   .model-option {
     padding: 15px 20px;
     display: flex;
     flex-direction: column;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-color);
     cursor: pointer;
     transition: background-color 0.2s;
     
@@ -33,11 +39,11 @@
     }
     
     &:hover {
-      background-color: #f8f9fa;
+      background-color: var(--light-bg);
     }
     
     &.selected {
-      background-color: #f0f7ff;
+      background-color: rgba(var(--ion-color-primary-rgb), 0.1);
       border-left: 4px solid var(--ion-color-primary);
     }
     
@@ -55,21 +61,21 @@
     
     small {
       font-size: 12px;
-      color: #666;
+      color: var(--text-secondary);
     }
   }
 }
 
 .selected-model {
-  background: white;
+  background: var(--card-bg);
   margin: 10px 16px;
   padding: 12px 16px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   font-size: 14px;
-  color: #333;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  color: var(--text-color);
+  box-shadow: var(--card-shadow);
   cursor: pointer;
   
   ion-icon:first-child {
@@ -83,14 +89,14 @@
   }
   
   ion-icon:last-child {
-    color: #888;
+    color: var(--text-secondary);
     font-size: 16px;
   }
 }
 
 .progress-container {
   height: 8px;
-  background-color: #e0e0e0;
+  background-color: var(--border-color);
   margin: 0;
   position: sticky;
   top: 0;
@@ -107,7 +113,8 @@
 .question-card {
   margin: 20px 16px;
   padding: 24px;
-  background-color: white;
+  background-color: var(--card-bg);
+  color: var(--text-color);
   border-radius: 16px;
   box-shadow: var(--card-shadow);
 }
@@ -120,7 +127,7 @@
   font-size: 14px;
   font-weight: 500;
   color: var(--primary-color);
-  background-color: rgba(56, 128, 255, 0.1);
+  background-color: rgba(var(--primary-color-rgb), 0.1);
   border-radius: 20px;
   letter-spacing: 0.3px;
 }
@@ -130,7 +137,7 @@
   margin-bottom: 24px;
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-color);
   line-height: 1.4;
 }
 
@@ -170,31 +177,31 @@
 /* Estilos específicos para opciones seleccionadas */
 .selected-yes {
   border-color: var(--success-color);
-  background-color: rgba(45, 211, 111, 0.1);
+  background-color: rgba(var(--success-color-rgb), 0.1);
 }
 
 .selected-no {
   border-color: var(--danger-color);
-  background-color: rgba(235, 68, 90, 0.1);
+  background-color: rgba(var(--danger-color-rgb), 0.1);
 }
 
 .selected-dontknow {
   border-color: var(--neutral-color);
-  background-color: rgba(146, 148, 156, 0.1);
+  background-color: rgba(var(--neutral-color-rgb), 0.1);
 }
 
 .selected-detail {
   border-color: var(--primary-color);
-  background-color: rgba(56, 128, 255, 0.1);
+  background-color: rgba(var(--primary-color-rgb), 0.1);
 }
 
 /* Tarjeta de opciones adicionales */
 .additional-info-card {
   margin: 8px 0 20px;
   padding: 20px;
-  background-color: rgba(56, 128, 255, 0.05);
+  background-color: rgba(var(--ion-color-primary-rgb), 0.05);
   border-radius: 12px;
-  border: 1px solid rgba(56, 128, 255, 0.2);
+  border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
   animation: fadeIn 0.4s ease;
 }
 
@@ -203,7 +210,7 @@
   margin-bottom: 16px;
   font-size: 16px;
   font-weight: 500;
-  color: #444;
+  color: var(--text-color);
 }
 
 /* Botones de navegación */
@@ -221,7 +228,7 @@ ion-textarea {
   --padding-end: 12px;
   --placeholder-color: #999;
   border-radius: 8px;
-  background: #f5f7fa;
+  background: var(--surface-color);
 }
 
 /* Animación para la aparición de detalles adicionales */
@@ -233,7 +240,7 @@ ion-textarea {
 /* Modo oscuro y ajustes de accesibilidad */
 @media (prefers-color-scheme: dark) {
   .question-card {
-    background-color: #1e1e1e;
+    background-color: var(--ion-card-background);
   }
   
   .question-section {
@@ -242,20 +249,20 @@ ion-textarea {
   }
   
   .question-text {
-    color: #f0f0f0;
+    color: var(--ion-text-color);
   }
   
   .option {
-    background-color: #2a2a2a;
+    background-color: var(--ion-item-background);
   }
   
   .additional-info-card {
-    background-color: rgba(56, 128, 255, 0.1);
-    border-color: rgba(56, 128, 255, 0.3);
+    background-color: rgba(var(--ion-color-primary-rgb), 0.05);
+    border-color: rgba(var(--ion-color-primary-rgb), 0.3);
   }
   
   .additional-info-card h2 {
-    color: #ddd;
+    color: var(--ion-text-color);
   }
   
   ion-textarea {

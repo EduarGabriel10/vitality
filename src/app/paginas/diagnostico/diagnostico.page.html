@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title size="large">Diagnóstico</ion-title>
+    <ion-title size="large">Diagnóstico Preeliminar</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -85,11 +85,23 @@
     </ion-card>
   </div>
 
-  <div *ngIf="!isLoading && !diagnosticoParsed" class="no-diagnostico">
-    <ion-card>
-      <ion-card-content>
-        <p class="ion-text-center">{{ diagnostico }}</p>
-      </ion-card-content>
-    </ion-card>
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !diagnosticoParsed" class="empty-state">
+    <div class="empty-state-content">
+      <div class="empty-state-icon">
+        <ion-icon name="document-text-outline"></ion-icon>
+      </div>
+      <h2>No hay diagnóstico disponible</h2>
+      <p>Por favor, realice una consulta médica primero para obtener un Diagnostico preeliminar.</p>
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        color="medium" 
+        routerLink="/principal/dashboard"
+        class="back-to-dashboard">
+        <ion-icon name="home" slot="start"></ion-icon>
+        Volver al Inicio
+      </ion-button>
+    </div>
   </div>
 </ion-content>

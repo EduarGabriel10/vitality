@@ -1,7 +1,17 @@
 
 /* Estilos generales */
+:host {
+  --background: var(--ion-background-color);
+  --text-color: var(--ion-text-color);
+  --card-background: var(--ion-card-background);
+  --border-color: var(--ion-border-color);
+  --item-background: var(--ion-item-background);
+  --item-border-color: var(--ion-item-border-color);
+}
+
 ion-content {
-  --background: #f8f9fa;
+  --background: var(--ion-background-color);
+  color: var(--ion-text-color);
 }
 
 /* Sección de búsqueda */
@@ -13,9 +23,10 @@ ion-content {
   text-align: center;
   margin-bottom: 24px;
   padding: 20px 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
   border-radius: 16px;
   color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .search-icon {
@@ -38,23 +49,27 @@ ion-content {
 }
 
 .search-input-container {
-  background: white;
+  background: var(--card-background);
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
 }
 
 .search-item {
-  --background: #f8f9fa;
+  --background: var(--item-background);
   --border-radius: 12px;
   --padding-start: 16px;
   --padding-end: 16px;
+  --border-color: var(--item-border-color);
+  --color: var(--ion-text-color);
   margin-bottom: 16px;
   border-radius: 12px;
+  border: 1px solid var(--border-color);
 }
 
 .input-icon {
-  color: #667eea;
+  color: var(--ion-color-primary);
   margin-right: 12px;
 }
 
@@ -63,12 +78,16 @@ ion-content {
 }
 
 .search-button {
-  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
   --border-radius: 12px;
+  --color: white;
+  --background-hover: var(--ion-color-primary-shade);
+  --background-activated: var(--ion-color-primary-shade);
   height: 48px;
   font-weight: 600;
   text-transform: none;
   font-size: 16px;
+  margin-top: 8px;
 }
 
 /* Resultado principal */
@@ -77,10 +96,11 @@ ion-content {
 }
 
 .main-result-card {
-  --background: white;
+  --background: var(--card-background);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   margin: 0;
+  border: 1px solid var(--border-color);
 }
 
 .card-header-content {
@@ -98,14 +118,15 @@ ion-content {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--ion-text-color);
 }
 
 .description-text {
   font-size: 16px;
   line-height: 1.6;
-  color: #34495e;
+  color: var(--ion-text-color);
   margin: 0;
+  opacity: 0.9;
 }
 
 /* Secciones detalladas */
@@ -116,7 +137,7 @@ ion-content {
 .section-title {
   font-size: 20px;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--ion-text-color);
   margin: 0 0 16px 0;
   padding: 0 4px;
 }
@@ -128,15 +149,21 @@ ion-content {
 }
 
 .custom-accordion {
-  --background: white;
+  --background: var(--card-background);
+  border-bottom: 1px solid var(--border-color);
+  
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .accordion-header {
-  --background: white;
-  --color: #2c3e50;
+  --background: var(--item-background);
+  --color: var(--ion-text-color);
   --padding-start: 20px;
   --padding-end: 20px;
   --min-height: 64px;
+  --border-color: var(--border-color);
 }
 
 .accordion-header-content {
@@ -148,11 +175,11 @@ ion-content {
 
 .section-icon {
   font-size: 24px;
-  color: #667eea;
+  color: var(--ion-color-primary);
 }
 
 .section-icon.warning {
-  color: #e74c3c;
+  color: var(--ion-color-danger);
 }
 
 .section-label {
@@ -161,20 +188,22 @@ ion-content {
 }
 
 .chevron-icon {
-  color: #95a5a6;
+  color: var(--ion-color-medium);
   transition: transform 0.3s ease;
 }
 
 .accordion-content {
   padding: 20px;
-  background: #f8f9fa;
+  background: var(--card-background);
+  border-top: 1px solid var(--border-color);
 }
 
 .content-text {
   font-size: 16px;
   line-height: 1.6;
-  color: #34495e;
+  color: var(--ion-text-color);
   margin: 0;
+  opacity: 0.9;
 }
 
 /* Disclaimer */
@@ -183,10 +212,11 @@ ion-content {
 }
 
 .disclaimer-card {
-  --background: #fff3cd;
+  --background: var(--ion-color-warning-tint, #fff3cd);
   border-radius: 12px;
-  border-left: 4px solid #ffc107;
+  border-left: 4px solid var(--ion-color-warning);
   margin: 0;
+  color: var(--ion-color-warning-contrast, #000);
 }
 
 .disclaimer-content {
@@ -197,7 +227,7 @@ ion-content {
 
 .disclaimer-icon {
   font-size: 24px;
-  color: #856404;
+  color: var(--ion-color-warning-shade);
   flex-shrink: 0;
 }
 

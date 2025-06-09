@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IonRouterOutlet, Platform } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { UsuarioService } from '../../services/usuario.service';
 import { Injectable } from '@angular/core';
 
@@ -20,9 +21,9 @@ export class DashboardPage implements OnInit {
 
   constructor(
     private platform: Platform,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    private router: Router
   ) {
-    // Subscribe to platform resume event to refresh data when app comes to foreground
     this.platform.resume.subscribe(() => {
       this.obtenerDatos();
     });
@@ -32,18 +33,23 @@ export class DashboardPage implements OnInit {
     this.cargarUsuario();
   }
 
-  // This will be called every time the page is about to enter
-  ionViewWillEnter() {
+    ionViewWillEnter() {
     this.obtenerDatos();
+  }
+
+  navigateToAnalysis() {
+    this.router.navigate(['/principal/analisis'], { 
+      queryParams: { refresh: new Date().getTime() },
+      replaceUrl: true
+    });
   }
 
   obtenerDatos() {
     this.usuarioService.obtenerConsultasPorUsuario(this.usuarioId).subscribe({
       next: (consultas: any[]) => {
         if (consultas && consultas.length > 0) {
-          // Ordenar por fecha descendente para asegurar que la más reciente esté primero
           consultas.sort((a: any, b: any) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-          const ultimaConsulta = consultas[0]; // Ahora sí es la más reciente
+          const ultimaConsulta = consultas[0];
           
           this.ultimoDiagnostico = {
             diagnostico: ultimaConsulta.resultadoIA || 'Sin diagnóstico disponible',
@@ -57,12 +63,10 @@ export class DashboardPage implements OnInit {
             diagnosticoMedico: ultimaConsulta.diagnosticoMedico || null
           };
 
-          // Guardar todas las recomendaciones
           this.recomendaciones = Array.isArray(ultimaConsulta.recomendaciones) 
             ? ultimaConsulta.recomendaciones 
             : (ultimaConsulta.recomendaciones ? [ultimaConsulta.recomendaciones] : ['No hay recomendaciones disponibles']);
           
-          // Tomar la primera recomendación para mostrar inicialmente
           this.recomendacionPrincipal = this.recomendaciones.length > 0 ? this.recomendaciones[0] : 'No hay recomendaciones disponibles';
         }
       },
@@ -93,7 +97,6 @@ export class DashboardPage implements OnInit {
     }
   }
 
-  // Método para alternar la visualización de todas las recomendaciones
   toggleRecomendaciones() {
     this.mostrarTodasRecomendaciones = !this.mostrarTodasRecomendaciones;
   }

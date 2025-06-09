@@ -1,7 +1,16 @@
 /* Estilos para componente de reseñas tipo Google Play */
 
 ion-content {
-  --background: #f8f9fa;
+  --background: var(--ion-background-color, #f8f9fa);
+}
+
+/* Variables para modo oscuro */
+:host {
+  --card-background: var(--ion-card-background, #ffffff);
+  --text-color: var(--ion-text-color, #000000);
+  --text-color-secondary: var(--ion-text-color-step-600, #5f6368);
+  --border-color: var(--ion-item-border-color, #e0e0e0);
+  --background-secondary: var(--ion-background-color-step-50, #f8f9fa);
 }
 
 /* Estilos para el resumen de valoraciones */
@@ -9,7 +18,8 @@ ion-content {
   margin: 16px;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-  background-color: white;
+  background-color: var(--card-background);
+  color: var(--text-color);
 }
 
 .rating-summary {
@@ -32,7 +42,7 @@ ion-content {
     font-size: 48px;
     font-weight: bold;
     margin: 0;
-    color: #333;
+    color: var(--text-color);
   }
   
   .average-stars {
@@ -76,7 +86,7 @@ ion-content {
     .progress-bar {
       flex: 1;
       height: 8px;
-      background-color: #f1f3f4;
+      background-color: var(--background-secondary);
       border-radius: 4px;
       overflow: hidden;
       margin: 0 8px;
@@ -153,7 +163,7 @@ ion-content {
 
 .review-comment {
   margin-top: 8px;
-  color: #202124;
+  color: var(--text-color);
   line-height: 1.4;
 }
 

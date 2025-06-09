@@ -1,3 +1,12 @@
+/* Variables para el tema */
+:host {
+  --background-color: var(--ion-background-color, #f5f7fa);
+  --card-background: var(--ion-card-background, #ffffff);
+  --text-color: var(--ion-text-color, #000000);
+  --text-secondary: var(--ion-text-color-step-600, #666666);
+  --border-color: var(--ion-item-border-color, #e0e0e0);
+}
+
 /* Estilos para la barra de herramientas */
 .toolbar-custom {
   --background: var(--ion-color-primary);
@@ -20,7 +29,8 @@
 
 /* Contenido principal */
 .profile-content {
-  --background: #f5f7fa;
+  --background: var(--background-color);
+  color: var(--text-color);
 }
 
 .profile-container {
@@ -39,6 +49,8 @@
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  background: var(--card-background);
+  color: var(--text-color);
   
   .profile-header {
     display: flex;
@@ -46,7 +58,7 @@
     align-items: center;
     padding: 24px 16px;
     background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-primary-shade));
-    color: white;
+    color: white; /* Mantener el texto en blanco para mejor contraste */
     text-align: center;
     
     @media (min-width: 576px) {
@@ -125,7 +137,7 @@
     ion-label {
       display: block;
       font-size: 0.85rem;
-      color: var(--ion-color-medium);
+      color: var(--text-secondary);
       margin-bottom: 4px;
     }
     
@@ -194,7 +206,7 @@
       --inner-padding-end: 0;
       margin-bottom: 16px;
       --border-radius: 8px;
-      --background: rgba(var(--ion-color-light-rgb), 0.5);
+      --background: var(--ion-item-background, rgba(var(--ion-color-light-rgb), 0.5));
       
       &:last-child {
         margin-bottom: 0;

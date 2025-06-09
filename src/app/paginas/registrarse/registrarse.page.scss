@@ -5,7 +5,9 @@ $card-radius: 24px;
 $button-radius: 50px; // Botones más redondeados según la imagen
 $shadow: 0 8px 20px rgba(122, 107, 243, 0.3);
 $input-bg: #f7f9fc;
-$text-color: #333;
+$text-color: #333333;
+$placeholder-color: #777777;
+$border-color: #dddddd;
 
 // Eliminar todos los paddings y márgenes por defecto
 * {
@@ -85,14 +87,33 @@ ion-content {
     }
 
     .custom-item {
-      --background: $white;
+      --background: #ffffff;
       --border-radius: 12px;
       --padding-start: 12px;
-      --padding-end: 40px; // Añadir más padding a la derecha para el ícono
-      border: 1px solid #ddd;
+      --padding-end: 40px;
+      --color: #333333;
+      --placeholder-color: #777777;
+      --placeholder-opacity: 1;
+      border: 1px solid $border-color;
       box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.05);
-      margin-bottom: 8px;
-      position: relative; // Asegurar que el posicionamiento absoluto del ícono sea relativo al item
+      margin-bottom: 15px;
+      position: relative;
+      
+      ion-label {
+        color: $placeholder-color;
+        font-weight: 500;
+      }
+      
+      ion-input, ion-select, ion-datetime {
+        --color: $text-color;
+        --placeholder-color: $placeholder-color;
+        --placeholder-opacity: 1;
+        font-size: 16px;
+      }
+      
+      input {
+        color: $text-color;
+      }
     }
 
     ion-icon {
@@ -100,6 +121,7 @@ ion-content {
       font-size: 20px;
       color: $primary-color;
       margin-right: 10px;
+      color: #666666;
       
       &.eye-icon {
         margin-right: 0;
@@ -135,8 +157,11 @@ ion-content {
         letter-spacing: 0.5px;
 
         &.register-btn {
-          --background: #{$primary-color};
-          --box-shadow: 0 5px 15px rgba(122, 107, 243, 0.3);
+          --background: #7a6bf3;
+        --color: #ffffff;
+        --box-shadow: 0 5px 15px rgba(122, 107, 243, 0.3);
+        --background-hover: #6a5bd3;
+        --background-activated: #5a4bc3;
         }
 
         &:disabled {
@@ -148,13 +173,27 @@ ion-content {
     }
 
     .register-container {
-      margin-top: 15px;
+      margin-top: 20px;
       font-size: 14px;
+      color: #555555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+
+      span {
+        color: #555555;
+      }
 
       .login-link {
         color: $primary-color;
-        font-weight: bold;
+        font-weight: 600;
         text-decoration: none;
+        font-size: 15px;
+        
+        &:active {
+          opacity: 0.8;
+        }
       }
     }
   }

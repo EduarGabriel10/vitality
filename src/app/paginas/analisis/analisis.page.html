@@ -5,42 +5,36 @@
 </ion-header>
 
 <ion-content>
-  <!-- AI Model Selection -->
   <div class="ai-model-selector" *ngIf="showModelSelection">
     <div class="model-option" (click)="selectAIModel('gemini-1.5-flash')" [class.selected]="selectedAIModel === 'gemini-1.5-flash'">
-      <ion-icon name="flash"></ion-icon>
-      <span>Gemini 1.5 Flash</span>
+      <ion-icon name="logo-google"></ion-icon>
+      <span>Gemini 1.5</span>
       <small>Rápido y preciso</small>
     </div>
     <div class="model-option" (click)="selectAIModel('gemini-2.5-flash')" [class.selected]="selectedAIModel === 'gemini-2.5-flash'">
-      <ion-icon name="rocket"></ion-icon>
-      <span>Gemini 2.5 Flash</span>
+      <ion-icon name="logo-slack"></ion-icon>
+      <span>Claude 3.5 Sonnet</span>
       <small>Más avanzado</small>
     </div>
   </div>
 
-  <!-- Barra de progreso -->
   <div class="progress-container">
     <div class="progress-bar" [style.width.%]="progress"></div>
   </div>
-  
-  <!-- Selected Model Indicator -->
   <div class="selected-model" (click)="toggleModelSelection()">
     <ion-icon name="color-wand"></ion-icon>
-    <span>Modelo: {{ selectedAIModel === 'gemini-1.5-flash' ? 'Gemini 1.5 Flash' : 'Gemini 2.5 Flash' }}</span>
+    <span>Modelo: {{ selectedAIModel === 'gemini-1.5-flash' ? 'Gemini 1.5' : 'Claude 3.5 Sonnet' }}</span>
     <ion-icon [name]="showModelSelection ? 'chevron-up' : 'chevron-down'"></ion-icon>
   </div>
 
-  <!-- Tarjeta de pregunta -->
-  <div class="question-card">
-    <!-- Sección de la pregunta -->
+  <div class="question-card" *ngIf="currentQuestion">
+    >
     <div class="question-section" *ngIf="currentQuestion?.section">
       {{ currentQuestion.section }}
     </div>
     
     <h2 class="question-text">{{ currentQuestion.text }}</h2>
 
-    <!-- Si es de tipo texto (por ejemplo, la edad) -->
     <div *ngIf="currentQuestion?.responseType === 'text'; else optionsTemplate">
       <ion-item>
         <ion-label position="floating">Ingrese su edad (opcional)</ion-label>
@@ -54,10 +48,8 @@
       </ion-item>
     </div>
 
-    <!-- Plantilla para otras opciones -->
     <ng-template #optionsTemplate>
 
-      <!-- Si es de tipo directOptions (solo opciones, sin Sí/No) -->
       <div *ngIf="currentQuestion.responseType === 'directOptions'; else yesNoBlock">
         <div class="answer-options">
           <div class="option"
@@ -70,7 +62,6 @@
         </div>
       </div>
 
-      <!-- Bloque normal con Sí / No / No lo sé -->
       <ng-template #yesNoBlock>
         <div class="answer-options">
           <div 
@@ -98,7 +89,6 @@
           </div>
         </div>
 
-        <!-- Opciones adicionales cuando se responde "Sí" -->
         <div class="additional-info-card"
             *ngIf="currentQuestion.answer === 'Sí' && currentQuestion.responseType === 'yesnodetail'">
           <h2>Seleccione una opción:</h2>
@@ -115,7 +105,6 @@
             </div>
           </div>
 
-          <!-- Fallback si no se definieron detailOptions -->
           <ng-template #fallbackTextarea>
             <ion-item>
               <ion-textarea
@@ -129,7 +118,6 @@
       </ng-template>
     </ng-template>
 
-    <!-- Botones de navegación -->
     <div class="navigation-buttons">
       <ion-button expand="block" fill="outline" color="medium" (click)="goToPreviousQuestion()" [disabled]="currentQuestionIndex === 0">
         <ion-icon name="arrow-back-outline" slot="start"></ion-icon>

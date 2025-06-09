@@ -9,6 +9,7 @@ import { UsuarioService } from '../../services/usuario.service';
   standalone: false
 })
 export class HistorialPage implements OnInit {
+  cargando = false;
 
   consultas: any[] = [];
   ordenDescendente: boolean = true;
@@ -229,4 +230,21 @@ export class HistorialPage implements OnInit {
 
     await alert.present();
   }
+
+  getPromedioGravedad(): number {
+    const totalGravedad = this.consultas.reduce((total, consulta) => total + consulta.gravedad, 0);
+    return totalGravedad / this.consultas.length;
+  }
+
+  toggleExpanded(consulta: any) {
+    consulta.expanded = !consulta.expanded;
+  }
+
+  getGravedadColor(gravedad: number): string {
+    if (gravedad >= 70) return 'danger';
+    if (gravedad >= 40) return 'warning';
+    return 'success';
+  }
+
+
 }

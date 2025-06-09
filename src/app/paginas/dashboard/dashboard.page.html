@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-title size="large">Mi Diagnóstico</ion-title>
   </ion-toolbar>
@@ -32,7 +32,7 @@
       </ion-row>
       <ion-row>
         <ion-col size="6">
-          <ion-card class="menu-card" routerLink="/principal/analisis">
+          <ion-card class="menu-card" (click)="navigateToAnalysis()">
             <ion-card-content class="ion-text-center">
               <ion-icon name="pulse-outline" class="menu-icon"></ion-icon>
               <h3>Nuevo Diagnóstico</h3>

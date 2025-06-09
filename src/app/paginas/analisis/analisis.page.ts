@@ -3,6 +3,7 @@ import { AlertController } from '@ionic/angular';
 import { Question } from 'src/app/modelo/question.model';
 import { QuestionsService } from 'src/app/services/questions.service';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-analisis',
@@ -19,12 +20,33 @@ export class AnalisisPage {
   constructor(
     private questionsService: QuestionsService,
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.questions = this.questionsService.getQuestions();
+    this.route.queryParams.subscribe(params => {
+      if (params['refresh']) {
+        this.resetForm();
+      }
+    });
+
+    this.resetForm();
   }
+
+  resetForm() {
+    // Obtener las preguntas
+    this.questions = this.questionsService.getQuestions().map(q => ({
+      ...q,
+      answer: '',
+      additionalInfo: ''
+    }));
+  
+    this.currentQuestionIndex = 0;
+    this.selectedAIModel = 'gemini-1.5-flash';
+    this.showModelSelection = false;
+  }
+
 
   get currentQuestion(): Question {
     return this.questions[this.currentQuestionIndex];
