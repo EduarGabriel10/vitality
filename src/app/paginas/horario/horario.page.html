@@ -22,14 +22,17 @@
             <ion-icon name="calendar" slot="start"></ion-icon>
             Fecha del horario
           </ion-label>
-          <ion-datetime
-            [(ngModel)]="fechaBase"
-            presentation="date"
-            name="fechaBase"
-            placeholder="Selecciona una fecha"
-            [min]="fechaMinima"
-            fill="outline">
-          </ion-datetime>
+          <div class="datetime-container">
+            <ion-input
+              [value]="formatearFecha(fechaBase)"
+              placeholder="Selecciona una fecha"
+              readonly
+              (click)="abrirCalendario()"
+              fill="outline"
+              class="datetime-input">
+            </ion-input>
+            <ion-icon name="calendar-outline" class="datetime-icon" (click)="abrirCalendario()"></ion-icon>
+          </div>
         </ion-item>
 
         <!-- Horarios -->
@@ -43,15 +46,16 @@
         <ion-grid class="horario-grid">
           <ion-row class="ion-align-items-center">
             <ion-col size="5">
-              <ion-item fill="outline">
-                <ion-label position="floating">Hora inicio</ion-label>
-                <ion-datetime
-                  [(ngModel)]="horaInicio"
-                  presentation="time"
-                  name="horaInicio"
-                  placeholder="08:00">
-                </ion-datetime>
-              </ion-item>
+              <div class="time-input-container">
+                <ion-input
+                  [value]="formatearHora(horaInicio)"
+                  placeholder="08:00 AM"
+                  readonly
+                  (click)="abrirSelectorHora('inicio')"
+                  class="time-input">
+                </ion-input>
+                <ion-icon name="time-outline" class="time-icon" (click)="abrirSelectorHora('inicio')"></ion-icon>
+              </div>
             </ion-col>
             
             <ion-col size="2" class="ion-text-center">
@@ -59,15 +63,16 @@
             </ion-col>
             
             <ion-col size="5">
-              <ion-item fill="outline">
-                <ion-label position="floating">Hora fin</ion-label>
-                <ion-datetime
-                  [(ngModel)]="horaFin"
-                  presentation="time"
-                  name="horaFin"
-                  placeholder="17:00">
-                </ion-datetime>
-              </ion-item>
+              <div class="time-input-container">
+                <ion-input
+                  [value]="formatearHora(horaFin)"
+                  placeholder="05:00 PM"
+                  readonly
+                  (click)="abrirSelectorHora('fin')"
+                  class="time-input">
+                </ion-input>
+                <ion-icon name="time-outline" class="time-icon" (click)="abrirSelectorHora('fin')"></ion-icon>
+              </div>
             </ion-col>
           </ion-row>
         </ion-grid>

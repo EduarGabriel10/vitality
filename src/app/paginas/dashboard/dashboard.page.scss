@@ -1,7 +1,48 @@
-// Ensure the page has proper background color
+// Dark mode support
 :host {
   --background: var(--ion-background-color);
   --color: var(--ion-text-color);
+  --card-background: var(--ion-card-background);
+  --card-border: var(--ion-border-color);
+  --text-muted: var(--ion-color-medium);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --item-background: var(--ion-item-background);
+  --border-radius: 12px;
+}
+
+// Dark mode media query
+@media (prefers-color-scheme: dark) {
+  :host {
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --card-background: var(--ion-card-background);
+    --card-border: var(--ion-border-color);
+  }
+  
+  .menu-card {
+    background: var(--card-background);
+    border-color: var(--card-border);
+    
+    .menu-icon {
+      background: rgba(var(--ion-color-primary-rgb), 0.2);
+    }
+  }
+  
+  .resultado-card {
+    ion-card-header {
+      background: var(--ion-color-primary-shade);
+    }
+  }
+  
+  .diagnostico-texto,
+  .recomendaciones-texto,
+  .todas-recomendaciones .recomendacion-item {
+    background: var(--item-background);
+    border-color: var(--card-border);
+  }
+  
+  .estado-badge {
+    color: white;
+  }
 }
 
 .user-greeting {
@@ -24,9 +65,11 @@
   .menu-card {
     margin: 0;
     height: 100%;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+    background: var(--card-background);
+    border: 1px solid var(--card-border);
     
     &:active {
       transform: scale(0.97);
@@ -44,6 +87,9 @@
       font-size: 36px;
       color: var(--ion-color-primary);
       margin-bottom: 8px;
+      background: rgba(var(--ion-color-primary-rgb), 0.1);
+      padding: 12px;
+      border-radius: 50%;
     }
     
     h3 {
@@ -51,6 +97,7 @@
       font-size: 14px;
       font-weight: 500;
       text-align: center;
+      color: var(--ion-text-color);
     }
   }
 }
@@ -60,17 +107,20 @@
 }
 
 .resultado-card {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 16px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  border-radius: var(--border-radius);
   overflow: hidden;
+  background: var(--card-background);
+  border: 1px solid var(--card-border);
   
   ion-card-header {
-    background: var(--ion-color-primary-shade);
+    background: var(--ion-color-primary);
+    --color: var(--ion-color-primary-contrast);
     
     ion-card-title {
       font-size: 22px;
       font-weight: bold;
-      color: white;
+      color: var(--ion-color-primary-contrast);
     }
   }
 }
@@ -105,9 +155,11 @@
   line-height: 1.5;
   padding: 12px;
   color: var(--ion-text-color);
-  background: var(--ion-item-background);
+  background: var(--item-background);
   border-radius: 8px;
   margin: 8px 0;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .recomendacion-header {
@@ -142,13 +194,14 @@
   font-size: 16px;
   line-height: 1.6;
   white-space: pre-line;
-  background: var(--ion-item-background);
+  background: var(--item-background);
   color: var(--ion-text-color);
   padding: 16px;
-  border-radius: 12px;
+  border-radius: var(--border-radius);
   border-left: 4px solid var(--ion-color-secondary);
   margin: 8px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  border: 1px solid var(--card-border);
 }
 
 .todas-recomendaciones {
@@ -164,14 +217,17 @@
   }
   
   .recomendacion-item {
-    --background: var(--ion-item-background);
+    --background: var(--item-background);
     --color: var(--ion-text-color);
     --border-radius: 8px;
     margin-bottom: 8px;
     --padding-start: 16px;
     --inner-padding-end: 16px;
-    --border-color: var(--ion-border-color);
+    --border-color: var(--card-border);
     --detail-icon-color: var(--ion-color-medium);
+    --background-hover: var(--ion-color-light-shade);
+    --background-activated: var(--ion-color-light);
+    transition: background-color 0.2s ease;
     
     ion-label {
       margin: 12px 0;
@@ -185,9 +241,10 @@
       
       p {
         font-size: 14px;
-        color: var(--ion-color-dark);
+        color: var(--ion-text-color);
         margin: 0;
         white-space: normal;
+        opacity: 0.9;
       }
     }
     

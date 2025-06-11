@@ -35,6 +35,10 @@ const routes: Routes = [
       {
         path: 'citamed',
         loadChildren: () => import('../citamed/citamed.module').then(m => m.CitamedPageModule)
+      },
+      {
+        path: 'grafico',
+        loadChildren: () => import('../grafico/grafico.module').then(m => m.GraficoPageModule)
       }
     ]
   }

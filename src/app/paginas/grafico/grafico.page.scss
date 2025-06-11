@@ -90,6 +90,80 @@
   }
 }
 
+// Analysis Card Styles
+.analysis-card {
+  margin: 20px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  
+  ion-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 16px 8px;
+    
+    ion-card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      
+      ion-icon {
+        margin-right: 8px;
+        color: var(--ion-color-primary);
+      }
+    }
+  }
+  
+  .analysis-content {
+    padding: 0 16px 16px;
+    
+    .analysis-header {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--ion-color-light-shade);
+      
+      h3 {
+        margin: 0 0 4px 0;
+        font-size: 1.1rem;
+        color: var(--ion-color-dark);
+        display: flex;
+        align-items: center;
+      }
+      
+      .meta {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--ion-color-medium);
+      }
+    }
+    
+    .section-title {
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+    
+    .distribution, 
+    .key-findings, 
+    .recommendations {
+      margin-bottom: 16px;
+      
+      p {
+        margin: 8px 0;
+        line-height: 1.5;
+        font-size: 0.95rem;
+      }
+    }
+    
+    strong {
+      color: var(--ion-color-primary);
+      font-weight: 500;
+    }
+  }
+}
+
 // Mobile styles
 @media (max-width: 991px) {
   .chart-wrapper {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HorarioService } from 'src/app/services/horario.service';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, ToastController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-horario',
@@ -21,7 +21,8 @@ export class HorarioPage implements OnInit {
   constructor(
     private horarioService: HorarioService,
     private alertController: AlertController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private modalCtrl: ModalController
   ) {
     // Establecer fecha mínima como hoy
     this.fechaMinima = new Date().toISOString().split('T')[0];
@@ -164,19 +165,91 @@ export class HorarioPage implements OnInit {
     });
   }
 
-  formatearHora(fechaISO: string): string {
+  formatearHora(hora: string | null): string {
+    if (!hora) return '';
+    const date = new Date(hora);
+    return date.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
+  formatearFecha(fecha: string | null): string {
+    if (!fecha) return '';
+    const date = new Date(fecha);
+    return date.toLocaleDateString('es-MX', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      weekday: 'long'
+    });
+  }
+
+  async abrirCalendario() {
+    const alert = await this.alertController.create({
+      header: 'Seleccionar fecha',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Aceptar',
+          handler: (data) => {
+            this.fechaBase = data.fecha;
+          }
+        }
+      ],
+      inputs: [
+        {
+          name: 'fecha',
+          type: 'date',
+          value: this.fechaBase || new Date().toISOString().split('T')[0],
+          min: this.fechaMinima
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async abrirSelectorHora(tipo: 'inicio' | 'fin') {
+    const alert = await this.alertController.create({
+      header: `Seleccionar hora ${tipo === 'inicio' ? 'de inicio' : 'de fin'}`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Aceptar',
+          handler: (data) => {
+            // Asegurarse de que la hora tenga el formato correcto
+            const horaSeleccionada = data.hora || '00:00';
+            const fechaActual = new Date().toISOString().split('T')[0];
+            const fechaHora = new Date(`${fechaActual}T${horaSeleccionada}`);
+            
+            if (tipo === 'inicio') {
+              this.horaInicio = fechaHora.toISOString();
+            } else {
+              this.horaFin = fechaHora.toISOString();
+            }
+          }
+        }
+      ],
+      inputs: [
+        {
+          name: 'hora',
+          type: 'time',
+          value: this.obtenerHoraFormateada(tipo === 'inicio' ? this.horaInicio : this.horaFin)
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  private obtenerHoraFormateada(fechaISO: string | null): string {
     if (!fechaISO) return '';
-    
-    try {
-      const fecha = new Date(fechaISO);
-      return fecha.toLocaleTimeString('es-ES', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      });
-    } catch (error) {
-      return fechaISO;
-    }
+    const fecha = new Date(fechaISO);
+    return fecha.toTimeString().slice(0, 5);
   }
 
   private limpiarFormulario() {

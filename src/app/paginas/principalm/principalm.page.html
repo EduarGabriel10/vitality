@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Mi Aplicación</ion-title>
+    <ion-title>AI vitality</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -41,6 +41,13 @@
         <ion-item [routerLink]="'/principalm/citamed'" detail="false">
           <ion-icon slot="start" name="calendar-outline"></ion-icon>
           <ion-label>Citas Médicas</ion-label>
+        </ion-item>
+      </ion-menu-toggle>
+
+      <ion-menu-toggle auto-hide="false">
+        <ion-item [routerLink]="'/principalm/grafico'" detail="false">
+          <ion-icon slot="start" name="stats-chart-outline"></ion-icon>
+          <ion-label>Gráfico</ion-label>
         </ion-item>
       </ion-menu-toggle>
       

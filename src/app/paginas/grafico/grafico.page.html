@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>Gráfico de Tipos de Tos</ion-title>
+    <ion-title>Gráfico Estadistico</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="loadChartData()">
         <ion-icon slot="icon-only" name="refresh"></ion-icon>
@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true" class="ion-padding ion-content-bg">
   <!-- Refresher -->
   <ion-refresher slot="fixed" (ionRefresh)="refreshData($event)">
     <ion-refresher-content
@@ -90,26 +90,43 @@
             <canvas #pieChart></canvas>
           </div>
         </ion-col>
-        
-        <ion-card *ngIf="resumen.length > 0 && !loading">
-          <ion-card-header>
-            <ion-card-title>Resumen - {{ selectedSection }}</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-list>
-              <ion-item *ngFor="let item of resumen">
-                <ion-icon slot="start" [name]="getIcon(item.tipo)" [style.color]="getColor(item.tipo)"></ion-icon>
-                <ion-label>
-                  <h2>{{ item.tipo }}</h2>
-                  <p>{{ item.cantidad }} respuestas ({{ item.porcentaje }}%)</p>
-                </ion-label>
-              </ion-item>
-            </ion-list>
-            <p>Total de Consultas: {{ totalConsultas }}</p>
-          </ion-card-content>
-        </ion-card>
-        
       </ion-row>
     </ion-grid>
+
+    <!-- AI Analysis Section -->
+    <ion-card class="analysis-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="analytics" class="analysis-icon"></ion-icon>
+          Análisis de Datos
+        </ion-card-title>
+        <ion-button fill="clear" size="small" (click)="analyzeWithAI(filteredData)" [disabled]="isAnalyzing">
+          <ion-icon slot="start" name="refresh"></ion-icon>
+          Actualizar
+        </ion-button>
+      </ion-card-header>
+
+      <ion-card-content>
+        <!-- Loading State -->
+        <div *ngIf="isAnalyzing" class="ion-text-center ion-padding">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Analizando datos...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="analysisError && !isAnalyzing" class="ion-text-center ion-padding">
+          <ion-icon name="warning" color="warning" style="font-size: 24px;"></ion-icon>
+          <p>{{ analysisError }}</p>
+          <ion-button (click)="analyzeWithAI(filteredData)" fill="clear" size="small">
+            Reintentar
+          </ion-button>
+        </div>
+
+        <!-- Analysis Content -->
+        <div *ngIf="!isAnalyzing && aiAnalysis" class="analysis-content">
+          <p [innerHTML]="aiAnalysis | nl2br"></p>
+        </div>
+      </ion-card-content>
+    </ion-card>
   </div>
 </ion-content>

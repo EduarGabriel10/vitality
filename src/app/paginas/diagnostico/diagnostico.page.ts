@@ -67,8 +67,10 @@ export class DiagnosticoPage {
     if (this.respuestasIA && this.respuestasBackend) {
       if (this.selectedAIModel === 'gemini-2.5-flash') {
         this.enviarConsultaConOtraApi(this.respuestasIA, this.respuestasBackend, this.edad);
+        console.log('Usando Gemini 2.5');
       } else {
         this.enviarConsulta(this.respuestasIA, this.respuestasBackend, this.edad);
+        console.log('Usando Gemini 1.5');
       }
     }
   }
@@ -96,7 +98,8 @@ export class DiagnosticoPage {
       Considera la edad del paciente en tu análisis.
       Devuelve un diagnóstico preliminar en formato JSON con los campos:
       - "diagnostico"
-      - "probabilidad (en numero del 1 al 100)"
+      la probabilidad en numeros del 1 al 100
+      - "probabilidad"
       - "recomendaciones"
       - "porcentaje_de_gravedad"
     `;
@@ -162,9 +165,10 @@ export class DiagnosticoPage {
       Ten en cuenta que la edad puede afectar la interpretación de los síntomas y el diagnóstico.
       Devuelve un diagnóstico preliminar en formato JSON. El JSON debe tener los siguientes campos:
       - "diagnostico"
-      - "probabilidad (en numero del 1 al 100)"
+      la probabilidad en numeros del 1 al 100
+      - "probabilidad"
       - "recomendaciones"
-      - "porcentaje de gravedad (1 a 100)"
+      - "porcentaje de gravedad"
     `;
 
     try {

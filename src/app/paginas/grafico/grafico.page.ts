@@ -1,12 +1,23 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Chart, registerables } from 'chart.js';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { Nl2BrPipe } from '../../pipes/nl2br.pipe';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-grafico',
   templateUrl: './grafico.page.html',
   styleUrls: ['./grafico.page.scss'],
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    Nl2BrPipe
+  ]
 })
 export class GraficoPage implements OnInit, AfterViewInit {
   @ViewChild('pieChart') pieChartRef!: ElementRef<HTMLCanvasElement>;
@@ -21,6 +32,13 @@ export class GraficoPage implements OnInit, AfterViewInit {
   error: string | null = null;
   viewReady = false;
 
+  // AI Analysis
+  aiAnalysis: string = '';
+  isAnalyzing: boolean = false;
+  analysisError: string | null = null;
+  private genAI: any;
+  private apiKey = 'AIzaSyAQ_pZAfPU7bVIFU-pmkmW_KFCiMR7M8SY'; // Consider moving to environment variables
+
   // Filtros
   selectedYear: number | null = null;
   selectedMonth: number | null = null;
@@ -34,6 +52,7 @@ export class GraficoPage implements OnInit, AfterViewInit {
 
   constructor(private http: HttpClient) {
     Chart.register(...registerables);
+    this.genAI = new GoogleGenerativeAI(this.apiKey);
   }
 
   ngOnInit() {}
@@ -46,10 +65,10 @@ export class GraficoPage implements OnInit, AfterViewInit {
   selectedSection: string = 'Tos y Flema';
 
   urlMap: Record<string, string> = {
-    'Tos y Flema': 'http://localhost:3000/api/respuestas/tipo2/fecha',
-    'Dificultad Respiratoria': 'http://localhost:3000/api/respuestas/tipo4/fecha',
-    'Sintomas Generales': 'http://localhost:3000/api/respuestas/tipo7/fecha',
-    'Otros Indicadores': 'http://localhost:3000/api/respuestas/tipo11/fecha',
+    'Tos y Flema': 'https://vitality-bzt5.onrender.com/api/respuestas/tipo2/fecha',
+    'Dificultad Respiratoria': 'https://vitality-bzt5.onrender.com/api/respuestas/tipo4/fecha',
+    'Sintomas Generales': 'https://vitality-bzt5.onrender.com/api/respuestas/tipo7/fecha',
+    'Otros Indicadores': 'https://vitality-bzt5.onrender.com/api/respuestas/tipo11/fecha',
   };
 
   detalleMap: Record<string, string[]> = {
@@ -59,11 +78,62 @@ export class GraficoPage implements OnInit, AfterViewInit {
     'Otros Indicadores': ['Por la noche', 'Durante el ejercicio', 'Con cambios de clima'],
   };
 
+  async analyzeWithAI(data: any[]) {
+    if (!data || data.length === 0) return;
+
+    this.isAnalyzing = true;
+    this.analysisError = null;
+
+    try {
+      const model = this.genAI.getGenerativeModel({
+        model: 'gemini-1.5-flash',
+        generationConfig: { responseMimeType: 'text/plain' }
+      });
+
+      const prompt = this.generateAnalysisPrompt(data);
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      this.aiAnalysis = response.text();
+    } catch (error) {
+      console.error('Error al analizar con IA:', error);
+      this.analysisError = 'Error al generar el análisis. Intente nuevamente.';
+    } finally {
+      this.isAnalyzing = false;
+    }
+  }
+
+  private generateAnalysisPrompt(data: any[]): string {
+    const total = data.length;
+    const resumen = this.procesarDatosParaResumen(data);
+    const fechaInicio = data.length > 0 ? new Date(data[data.length - 1].consulta.fecha).toLocaleDateString() : '';
+    const fechaFin = data.length > 0 ? new Date(data[0].consulta.fecha).toLocaleDateString() : '';
+
+    // Generar la distribución en una línea
+    const distribucion = resumen
+      .map((item: any) => `${item.tipo} (${item.porcentaje}%)`)
+      .join(', ');
+
+    return `
+    <div class="analysis-content">
+      <div class="analysis-header">
+        <h3><ion-icon name="analytics"></ion-icon> ${this.selectedSection}</h3>
+        <p class="meta">${fechaInicio} al ${fechaFin} • ${total} casos</p>
+      </div>
+      
+      <div class="key-findings">
+        <p>Distribución: <strong>${distribucion}</strong></p>
+        <p>Analiza brevemente los datos y da 1 recomendación clave.</p>
+      </div>
+    </div>
+    `;
+  }
+
   loadChartData(url?: string) {
     if (!this.viewReady) return;
 
     this.loading = true;
     this.error = null;
+    this.aiAnalysis = ''; // Reset previous analysis
     const apiUrl = url || this.urlMap[this.selectedSection];
 
     this.http.get<any[]>(apiUrl).subscribe({
@@ -73,12 +143,15 @@ export class GraficoPage implements OnInit, AfterViewInit {
           new Set(this.chartData.map(r => new Date(r.consulta.fecha).getFullYear()))
         ).sort();
 
-        this.filteredData = this.chartData.filter(item => {
+        this.filteredData = data.filter(item => {
           const fecha = new Date(item.consulta.fecha);
           const cumpleAnio = !this.selectedYear || fecha.getFullYear() === this.selectedYear;
-          const cumpleMes = !this.selectedMonth || (fecha.getMonth() + 1) === this.selectedMonth;
+          const cumpleMes = !this.selectedMonth || fecha.getMonth() + 1 === this.selectedMonth;
           return cumpleAnio && cumpleMes;
         });
+
+        // Analyze data with AI
+        this.analyzeWithAI(this.filteredData);
 
         const detallesEsperados = this.detalleMap[this.selectedSection] || [];
         const contador: Record<string, number> = {};
@@ -182,5 +255,30 @@ export class GraficoPage implements OnInit, AfterViewInit {
     const url = this.urlMap[section];
     this.selectedSection = section;
     this.loadChartData(url);
+  }
+
+  procesarDatosParaResumen(data: any[]): any[] {
+    const resumenMap = new Map<string, number>();
+    
+    // Contar ocurrencias de cada tipo
+    data.forEach(item => {
+      const tipo = item.detalles || item.respuesta;
+      resumenMap.set(tipo, (resumenMap.get(tipo) || 0) + 1);
+    });
+
+    const total = data.length;
+    const resultado: any[] = [];
+
+    // Convertir a array de objetos con porcentaje
+    resumenMap.forEach((cantidad, tipo) => {
+      resultado.push({
+        tipo: tipo || 'Sin especificar',
+        cantidad,
+        porcentaje: total > 0 ? ((cantidad / total) * 100).toFixed(1) : '0.0'
+      });
+    });
+
+    // Ordenar por cantidad (mayor a menor)
+    return resultado.sort((a, b) => b.cantidad - a.cantidad);
   }
 }
