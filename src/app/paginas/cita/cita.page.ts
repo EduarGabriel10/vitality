@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HorarioService } from 'src/app/services/horario.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
+import { MedicoService } from 'src/app/services/medico.service';
 import { AlertController, LoadingController } from '@ionic/angular';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-cita',
@@ -11,21 +13,23 @@ import { AlertController, LoadingController } from '@ionic/angular';
 })
 export class CitaPage implements OnInit {
   datosUsuario: any;
-  segmentoSeleccionado: string = 'horarios'; // valor por defecto
-  citas: any[] = []; // simulación de citas
+  segmentoSeleccionado: string = 'horarios'; 
+  citas: any[] = []; 
   horarios: any[] = [];
   isLoading: boolean = true;
   error: string | null = null;
   selectedHorario: any = null;
   isModalOpen = false;
 
+  medicos: any[] = [];
+
   constructor(
     private horarioService: HorarioService,
     private usuarioService: UsuarioService,
+    private medicoService: MedicoService,
     private alertController: AlertController,
     private loadingController: LoadingController
   ) { 
-    // Load initial data
     this.cargarCitas();
   }
 
@@ -35,7 +39,6 @@ export class CitaPage implements OnInit {
   }
 
 
-  //cargar usuario desde local
   cargarUsuario() {
     const usuario = localStorage.getItem('usuario');
     if (usuario) {
@@ -43,21 +46,38 @@ export class CitaPage implements OnInit {
       console.log(this.datosUsuario);
     }
   }
-  cargarHorarios() {
-    this.horarioService.getHorarios().subscribe({
-      next: (data) => {
-        this.horarios = data;
-        this.isLoading = false;
-      },
-      error: () => {
-        this.error = 'Error al cargar los horarios.';
-        this.isLoading = false;
+  async cargarHorarios() {
+    this.isLoading = true;
+    
+    try {
+      const [horariosResponse, medicosResponse] = await forkJoin([
+        this.horarioService.getHorarios().toPromise(),
+        this.medicoService.obtenerMedicos().toPromise()
+      ]).toPromise() || [];
+      
+      if (!horariosResponse || !medicosResponse) {
+        throw new Error('No se pudieron cargar los datos');
       }
-    });
+      
+      this.medicos = medicosResponse.medicos || [];
+      
+      this.horarios = (horariosResponse as any[]).map((horario: any) => {
+        const medico = this.medicos.find((m: any) => m.id === horario.medicoId);
+        return {
+          ...horario,
+          medico: medico || null
+        };
+      });
+      
+      this.isLoading = false;
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+      this.error = 'Error al cargar los datos. Por favor, intente de nuevo.';
+      this.isLoading = false;
+    }
   }
 
   agregarCita(horario: any) {
-    // Lógica para agendar cita
   }
   
   tieneSlotsDisponibles(horario: any): boolean {
@@ -98,7 +118,6 @@ export class CitaPage implements OnInit {
   }
 
   async verDetalleHorario(horario: any) {
-    // Mostrar detalles del horario si es necesario
     console.log('Detalles del horario:', horario);
   }
 
@@ -114,17 +133,15 @@ export class CitaPage implements OnInit {
     });
     await loading.present();
 
-    // Crear el objeto de la cita según el formato requerido
     const citaData = {
       fechaHora: slot.horaInicio,
       estado: 'ACEPTADA',
-      usuarioId: this.datosUsuario.id, // Usar el ID del usuario autenticado
+      usuarioId: this.datosUsuario.id, 
       medicoId: this.selectedHorario.medicoId,
       slotId: slot.id
     };
 
     try {
-      // Usar el servicio para agendar la cita
       await this.usuarioService.agendarCita(citaData).toPromise();
       
       await loading.dismiss();
@@ -135,7 +152,6 @@ export class CitaPage implements OnInit {
         buttons: [{
           text: 'Aceptar',
           handler: () => {
-            // Recargar las citas después de agendar
             this.cargarCitas();
           }
         }]
@@ -143,7 +159,6 @@ export class CitaPage implements OnInit {
       
       await alert.present();
       
-      // Cambiar a la pestaña de citas agendadas
       this.segmentoSeleccionado = 'citas';
       
     } catch (error) {
@@ -162,7 +177,6 @@ export class CitaPage implements OnInit {
     this.isModalOpen = false;
   }
 
-  // Cambiar entre pestañas
   segmentChanged(event: any) {
     this.segmentoSeleccionado = event.detail.value;
     if (this.segmentoSeleccionado === 'citas') {
@@ -196,18 +210,14 @@ export class CitaPage implements OnInit {
   async agendarCita(horario: any) {
     if (!horario.disponible) return;
     
-    // Mostrar el modal con los slots disponibles
     this.verDetalleHorario(horario);
   }
 
   async confirmarAgendamiento(slot: any) {
-    // Mostrar loading
     const loading = await this.loadingController.create({
       message: 'Agendando cita...',
     });
     await loading.present();
-
-    // Crear el objeto de la cita
     const citaData = {
       fechaHora: slot.horaInicio,
       usuarioId: this.datosUsuario.id,
@@ -218,7 +228,6 @@ export class CitaPage implements OnInit {
     };
 
     try {
-      // Usar el servicio para agendar la cita
       await this.usuarioService.agendarCita(citaData).toPromise();
       
       await loading.dismiss();
@@ -231,7 +240,6 @@ export class CitaPage implements OnInit {
       
       await alert.present();
       
-      // Actualizar la lista de horarios
       this.cargarHorarios();
       
     } catch (error: any) {
@@ -286,17 +294,14 @@ export class CitaPage implements OnInit {
             await loading.present();
 
             try {
-              // Llamada al servicio para cancelar la cita
               await this.usuarioService.cancelarCita(cita.id).toPromise();
               
-              // Mostrar mensaje de éxito
               const successAlert = await this.alertController.create({
                 header: '¡Listo!',
                 message: 'La cita ha sido cancelada correctamente.',
                 buttons: ['OK']
               });
               
-              // Actualizar la lista de citas
               await this.cargarCitas();
               await loading.dismiss();
               await successAlert.present();
@@ -317,4 +322,12 @@ export class CitaPage implements OnInit {
     });
     await alert.present();
   }
+
+  abrirEnGoogleMaps() {
+    const lat = -2.219125;
+    const lng = -80.853010;
+    const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+    window.open(url, '_blank');
+  }
+  
 }

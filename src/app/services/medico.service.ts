@@ -144,6 +144,12 @@ export class MedicoService {
    * @returns Observable con la respuesta del servidor
    */
   enviarDiagnostico(datos: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/diagnostico`, datos);
+    return this.http.post(`${this.apiUrl}/enviar-diagnostico`, datos);
+  }
+
+  // Obtiene la lista de médicos
+  // @returns Observable con la lista de médicos
+  obtenerMedicos(): Observable<{message: string, medicos: Medico[]}> {
+    return this.http.get<{message: string, medicos: Medico[]}>(`${this.apiUrl}/api/medico`);
   }
 }

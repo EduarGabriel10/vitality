@@ -33,10 +33,10 @@ export class ResenaPage implements OnInit {
   popoverOpen = false;
   popoverEvent: any;
 
-  // Propiedades para el resumen de valoraciones
   calificacionPromedio: number = 0;
   totalResenas: number = 0;
-  estrellasPorcentaje: number[] = [0, 0, 0, 0, 0]; // Porcentaje de cada estrella (1-5)
+  estrellasPorcentaje: number[] = [0, 0, 0, 0, 0];
+  usuarioYaReseno: boolean = false;
 
   constructor(
     private usuarioService: UsuarioService,
@@ -65,6 +65,10 @@ export class ResenaPage implements OnInit {
       next: (response) => {
         this.allResenas = response.resenas;
         this.calcularEstadisticas();
+        // Verificar si el usuario actual ya ha dejado una reseña
+        if (this.usuarioId) {
+          this.usuarioYaReseno = this.allResenas.some(resena => resena.usuarioId === this.usuarioId);
+        }
       },
       error: (error) => {
         console.error('Error al obtener reseñas:', error);
@@ -73,7 +77,6 @@ export class ResenaPage implements OnInit {
     });
   }
 
-  // Método para calcular estadísticas de valoraciones
   calcularEstadisticas() {
     if (this.allResenas.length === 0) {
       this.calificacionPromedio = 0;
@@ -84,12 +87,10 @@ export class ResenaPage implements OnInit {
 
     this.totalResenas = this.allResenas.length;
 
-    // Calcular promedio de calificaciones
     const sumaCalificaciones = this.allResenas.reduce((suma, resena) => suma + resena.calificacion, 0);
     this.calificacionPromedio = parseFloat((sumaCalificaciones / this.totalResenas).toFixed(1));
 
-    // Calcular porcentaje de cada estrella
-    const conteoEstrellas = [0, 0, 0, 0, 0]; // Contador para estrellas 1-5
+    const conteoEstrellas = [0, 0, 0, 0, 0];
 
     this.allResenas.forEach(resena => {
       const indice = resena.calificacion - 1;
@@ -98,7 +99,6 @@ export class ResenaPage implements OnInit {
       }
     });
 
-    // Convertir a porcentajes
     this.estrellasPorcentaje = conteoEstrellas.map(count =>
       Math.round((count / this.totalResenas) * 100)
     );
@@ -113,7 +113,6 @@ export class ResenaPage implements OnInit {
     await alert.present();
   }
 
-  // Obtener texto descriptivo basado en la calificación
   getRatingText(rating: number): string {
     switch (rating) {
       case 1: return 'Muy malo';
@@ -126,6 +125,12 @@ export class ResenaPage implements OnInit {
   }
 
   enviarResena() {
+    if (this.usuarioYaReseno) {
+      this.mostrarAlerta('Error', 'Ya has dejado una reseña. Puedes eliminarla para crear una nueva.');
+      this.popoverOpen = false;
+      return;
+    }
+
     if (this.calificacion === 0) {
       this.mostrarAlerta('Error', 'Por favor, selecciona una calificación');
       return;
@@ -136,9 +141,8 @@ export class ResenaPage implements OnInit {
       return;
     }
 
-    // Crear fecha en zona horaria de Ecuador (UTC-5)
     const fechaEcuador = new Date();
-    fechaEcuador.setHours(fechaEcuador.getHours() - 5); // Ajustar a UTC-5 (Ecuador)
+    fechaEcuador.setHours(fechaEcuador.getHours() - 5); 
 
     const nuevaResena = {
       comentario: this.comentario,
@@ -153,7 +157,7 @@ export class ResenaPage implements OnInit {
       next: () => {
         this.comentario = '';
         this.calificacion = 0;
-        this.popoverOpen = false; // Cerrar el popover después de enviar
+        this.popoverOpen = false; 
         this.obtenerResenas();
         this.mostrarAlerta('Éxito', 'Tu reseña ha sido publicada');
       },
@@ -167,6 +171,7 @@ export class ResenaPage implements OnInit {
   eliminarResena(id: number) {
     this.usuarioService.eliminarResena(id, this.usuarioId).subscribe({
       next: () => {
+        this.usuarioYaReseno = false;
         this.obtenerResenas();
         this.mostrarAlerta('Éxito', 'Reseña eliminada correctamente');
       },
@@ -177,7 +182,6 @@ export class ResenaPage implements OnInit {
     });
   }
 
-  // Método para verificar si el usuario actual es el autor de la reseña
   esAutorDeResena(resena: Resena): boolean {
     return this.usuarioId === resena.usuarioId;
   }
@@ -201,27 +205,23 @@ export class ResenaPage implements OnInit {
     this.enviarResena();
   }
   
-  // Generar un array con el número de estrellas llenas para el promedio
   get estrellasPromedio(): number[] {
     const estrellas = [];
     const entero = Math.floor(this.calificacionPromedio);
     const decimal = this.calificacionPromedio - entero;
     
-    // Añadir estrellas completas
     for (let i = 0; i < entero; i++) {
       estrellas.push(1); // 1 = estrella completa
     }
     
-    // Añadir media estrella si es necesario
     if (decimal >= 0.25 && decimal < 0.75) {
-      estrellas.push(0.5); // 0.5 = media estrella
+      estrellas.push(0.5); 
     } else if (decimal >= 0.75) {
-      estrellas.push(1); // 1 = estrella completa
+      estrellas.push(1); 
     }
     
-    // Completar con estrellas vacías
     while (estrellas.length < 5) {
-      estrellas.push(0); // 0 = estrella vacía
+      estrellas.push(0); 
     }
     
     return estrellas;

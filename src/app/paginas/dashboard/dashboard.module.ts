@@ -8,6 +8,8 @@ import { DashboardPageRoutingModule } from './dashboard-routing.module';
 import { NgChartsModule } from 'ng2-charts';
 
 import { DashboardPage } from './dashboard.page';
+import { ChatMedicoModule } from 'src/app/components/chat-medico/chat-medico.module'; // ajusta la ruta según tu estructura
+
 
 @NgModule({
   imports: [
@@ -15,7 +17,8 @@ import { DashboardPage } from './dashboard.page';
     FormsModule,
     IonicModule,
     NgChartsModule,
-    DashboardPageRoutingModule
+    DashboardPageRoutingModule,
+    ChatMedicoModule
   ],
   declarations: [DashboardPage]
 })

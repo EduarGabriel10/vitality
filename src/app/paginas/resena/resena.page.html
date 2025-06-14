@@ -71,10 +71,17 @@
     <p class="secondary-text">Sé el primero en compartir tu opinión</p>
   </div>
   
-  <!-- Botón para abrir el popover -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <!-- Botón para abrir el popover - Solo visible si el usuario no ha dejado reseña -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!usuarioYaReseno">
     <ion-fab-button (click)="abrirPopover($event)">
       <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Mensaje flotante si ya hay reseña -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="usuarioYaReseno">
+    <ion-fab-button color="medium" (click)="mostrarAlerta('Información', 'Ya has dejado una reseña. Puedes eliminarla para crear una nueva.')">
+      <ion-icon name="information-circle"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 

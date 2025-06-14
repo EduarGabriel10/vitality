@@ -1,0 +1,52 @@
+<!-- Floating Button -->
+<button *ngIf="!isOpen" (click)="toggleChat()" class="floating-button" aria-label="Abrir chat médico">
+  <ion-icon name="chatbubbles"></ion-icon>
+</button>
+
+<!-- Chat Container -->
+<div class="chat-container" [class.open]="isOpen">
+  <!-- Chat Header -->
+  <div class="chat-header">
+    <div class="header-content">
+      <ion-icon name="medical" class="medical-icon"></ion-icon>
+      <span>Asistente Médico</span>
+    </div>
+    <button class="close-button" (click)="toggleChat()" aria-label="Cerrar chat">
+      <ion-icon name="close"></ion-icon>
+    </button>
+  </div>
+
+  <!-- Chat Messages -->
+  <div class="chat-messages" #messagesContainer *ngIf="isOpen">
+    <div *ngFor="let message of messages" class="message" [class.user]="message.sender === 'user'" [class.bot]="message.sender === 'bot'">
+      <div class="message-content">
+        <div class="message-text">{{ message.text }}</div>
+        <div class="message-time">{{ message.timestamp | date:'shortTime' }}</div>
+      </div>
+    </div>
+    <div *ngIf="isLoading" class="message bot">
+      <div class="message-content">
+        <div class="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Input -->
+  <div class="chat-input" *ngIf="isOpen">
+    <ion-input
+      [(ngModel)]="newMessage"
+      (keyup.enter)="sendMessage()"
+      placeholder="Escribe tu consulta médica..."
+      class="message-input"
+      [disabled]="isLoading"
+      type="text">
+    </ion-input>
+    <ion-button fill="clear" (click)="sendMessage()" [disabled]="!newMessage.trim() || isLoading">
+      <ion-icon name="send"></ion-icon>
+    </ion-button>
+  </div>
+</div>

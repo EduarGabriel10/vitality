@@ -17,6 +17,11 @@
 
 <ion-content [fullscreen]="true" class="ion-padding">
 
+  <ion-button expand="block" color="tertiary" (click)="abrirEnGoogleMaps()">
+    Ver dirección del consultorio en Google Maps
+  </ion-button>
+  
+
   <!-- Vista de Horarios -->
   <div *ngIf="segmentoSeleccionado === 'horarios'" class="stories-container">
     <div class="story" *ngFor="let horario of horarios">
