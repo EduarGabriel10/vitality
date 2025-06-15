@@ -6,6 +6,8 @@ import { Chart, registerables } from 'chart.js';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Nl2BrPipe } from '../../pipes/nl2br.pipe';
 import { IonicModule } from '@ionic/angular';
+import { ChangeDetectorRef } from '@angular/core';
+import { GraficoConsultasComponent } from '../../components/grafico-consultas/grafico-consultas.component';
 
 @Component({
   selector: 'app-grafico',
@@ -16,28 +18,30 @@ import { IonicModule } from '@ionic/angular';
     CommonModule,
     FormsModule,
     IonicModule,
-    Nl2BrPipe
+    Nl2BrPipe,
+    GraficoConsultasComponent
   ]
 })
 export class GraficoPage implements OnInit, AfterViewInit {
   @ViewChild('pieChart') pieChartRef!: ElementRef<HTMLCanvasElement>;
+
   resumen: { tipo: string; cantidad: number; porcentaje: string }[] = [];
   totalConsultas = 0;
-
   pieChart: any;
   chartData: any[] = [];
   filteredData: any[] = [];
-
+  vistaSeleccionada: string = 'grafico';
   loading = true;
   error: string | null = null;
   viewReady = false;
+  selectedView: 'pie' | 'line' = 'pie';
 
-  // AI Analysis
+  // IA
   aiAnalysis: string = '';
   isAnalyzing: boolean = false;
   analysisError: string | null = null;
   private genAI: any;
-  private apiKey = 'AIzaSyAQ_pZAfPU7bVIFU-pmkmW_KFCiMR7M8SY'; // Consider moving to environment variables
+  private apiKey = 'AIzaSyAQ_pZAfPU7bVIFU-pmkmW_KFCiMR7M8SY';
 
   // Filtros
   selectedYear: number | null = null;
@@ -49,18 +53,6 @@ export class GraficoPage implements OnInit, AfterViewInit {
     { name: 'Julio', value: 7 }, { name: 'Agosto', value: 8 }, { name: 'Septiembre', value: 9 },
     { name: 'Octubre', value: 10 }, { name: 'Noviembre', value: 11 }, { name: 'Diciembre', value: 12 }
   ];
-
-  constructor(private http: HttpClient) {
-    Chart.register(...registerables);
-    this.genAI = new GoogleGenerativeAI(this.apiKey);
-  }
-
-  ngOnInit() {}
-
-  ngAfterViewInit() {
-    this.viewReady = true;
-    this.loadChartData();
-  }
 
   selectedSection: string = 'Tos y Flema';
 
@@ -78,54 +70,40 @@ export class GraficoPage implements OnInit, AfterViewInit {
     'Otros Indicadores': ['Por la noche', 'Durante el ejercicio', 'Con cambios de clima'],
   };
 
-  async analyzeWithAI(data: any[]) {
-    if (!data || data.length === 0) return;
-
-    this.isAnalyzing = true;
-    this.analysisError = null;
-
-    try {
-      const model = this.genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
-        generationConfig: { responseMimeType: 'text/plain' }
-      });
-
-      const prompt = this.generateAnalysisPrompt(data);
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      this.aiAnalysis = response.text();
-    } catch (error) {
-      console.error('Error al analizar con IA:', error);
-      this.analysisError = 'Error al generar el análisis. Intente nuevamente.';
-    } finally {
-      this.isAnalyzing = false;
-    }
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {
+    this.selectedView = 'pie'; // Default view
+    Chart.register(...registerables);
+    this.genAI = new GoogleGenerativeAI(this.apiKey);
   }
 
-  private generateAnalysisPrompt(data: any[]): string {
-    const total = data.length;
-    const resumen = this.procesarDatosParaResumen(data);
-    const fechaInicio = data.length > 0 ? new Date(data[data.length - 1].consulta.fecha).toLocaleDateString() : '';
-    const fechaFin = data.length > 0 ? new Date(data[0].consulta.fecha).toLocaleDateString() : '';
+  ngOnInit() {}
 
-    // Generar la distribución en una línea
-    const distribucion = resumen
-      .map((item: any) => `${item.tipo} (${item.porcentaje}%)`)
-      .join(', ');
+  ngAfterViewInit() {
+    // Esperar que Angular haya renderizado completamente
+    setTimeout(() => {
+      this.viewReady = true;
+      this.loadChartData();
+    }, 100);
+  }
 
-    return `
-    <div class="analysis-content">
-      <div class="analysis-header">
-        <h3><ion-icon name="analytics"></ion-icon> ${this.selectedSection}</h3>
-        <p class="meta">${fechaInicio} al ${fechaFin} • ${total} casos</p>
-      </div>
-      
-      <div class="key-findings">
-        <p>Distribución: <strong>${distribucion}</strong></p>
-        <p>Analiza brevemente los datos y da 1 recomendación clave.</p>
-      </div>
-    </div>
-    `;
+  onSectionChange(section: string) {
+    this.selectedSection = section;
+    this.loadChartData(this.urlMap[section]);
+  }
+
+  refreshData(event: any) {
+    this.loadChartData();
+    setTimeout(() => event.target.complete(), 500);
+  }
+
+  resetFilters() {
+    this.selectedYear = null;
+    this.selectedMonth = null;
+    this.loadChartData();
+  }
+
+  onViewChange(event: any) {
+    this.selectedView = event.detail.value;
   }
 
   loadChartData(url?: string) {
@@ -133,7 +111,8 @@ export class GraficoPage implements OnInit, AfterViewInit {
 
     this.loading = true;
     this.error = null;
-    this.aiAnalysis = ''; // Reset previous analysis
+    this.aiAnalysis = '';
+
     const apiUrl = url || this.urlMap[this.selectedSection];
 
     this.http.get<any[]>(apiUrl).subscribe({
@@ -150,12 +129,10 @@ export class GraficoPage implements OnInit, AfterViewInit {
           return cumpleAnio && cumpleMes;
         });
 
-        // Analyze data with AI
         this.analyzeWithAI(this.filteredData);
 
         const detallesEsperados = this.detalleMap[this.selectedSection] || [];
         const contador: Record<string, number> = {};
-
         detallesEsperados.forEach(det => contador[det] = 0);
 
         this.filteredData.forEach(item => {
@@ -173,7 +150,11 @@ export class GraficoPage implements OnInit, AfterViewInit {
           porcentaje: this.totalConsultas ? ((contador[tipo] / this.totalConsultas) * 100).toFixed(1) : '0'
         }));
 
-        setTimeout(() => this.createPieChart(), 300);
+        // Forzar detección de cambios para asegurar que el canvas esté disponible
+        this.cdr.detectChanges();
+
+        // Esperar que canvas esté presente antes de crear el gráfico
+        setTimeout(() => this.createPieChart(), 100);
         this.loading = false;
       },
       error: () => {
@@ -184,13 +165,15 @@ export class GraficoPage implements OnInit, AfterViewInit {
   }
 
   createPieChart() {
-    if (!this.pieChartRef || !this.pieChartRef.nativeElement) {
+    const canvas = this.pieChartRef?.nativeElement;
+    if (!canvas) {
       console.warn('Canvas no disponible todavía');
       return;
     }
 
-    const ctx = this.pieChartRef.nativeElement.getContext('2d');
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
     if (this.pieChart) this.pieChart.destroy();
 
     const resumenData = this.resumen.filter(r => r.cantidad > 0);
@@ -228,39 +211,58 @@ export class GraficoPage implements OnInit, AfterViewInit {
     });
   }
 
-  refreshData(event: any) {
-    this.loadChartData();
-    setTimeout(() => event.target.complete(), 500);
+  async analyzeWithAI(data: any[]) {
+    if (!data || data.length === 0) return;
+
+    this.isAnalyzing = true;
+    this.analysisError = null;
+
+    try {
+      const model = this.genAI.getGenerativeModel({
+        model: 'gemini-1.5-flash',
+        generationConfig: { responseMimeType: 'text/plain' }
+      });
+
+      const prompt = this.generateAnalysisPrompt(data);
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      this.aiAnalysis = response.text();
+    } catch (error) {
+      console.error('Error al analizar con IA:', error);
+      this.analysisError = 'Error al generar el análisis. Intente nuevamente.';
+    } finally {
+      this.isAnalyzing = false;
+    }
   }
 
-  resetFilters() {
-    this.selectedYear = null;
-    this.selectedMonth = null;
-    this.loadChartData();
-  }
+  private generateAnalysisPrompt(data: any[]): string {
+    const total = data.length;
+    const resumen = this.procesarDatosParaResumen(data);
+    const fechaInicio = data.length > 0 ? new Date(data[data.length - 1].consulta.fecha).toLocaleDateString() : '';
+    const fechaFin = data.length > 0 ? new Date(data[0].consulta.fecha).toLocaleDateString() : '';
 
-  getIcon(tipo: string): string {
-    return 'medkit'; // Puedes personalizar por tipo si deseas
-  }
+    const distribucion = resumen
+      .map((item: any) => `${item.tipo} (${item.porcentaje}%)`)
+      .join(', ');
 
-  getColor(tipo: string): string {
-    return 'primary'; // O usar un mapa por tipo
-  }
-
-  getBackgroundColor(tipo: string): string {
-    return 'var(--ion-color-primary)'; // O usar un mapa por tipo
-  }
-
-  onSectionChange(section: string) {
-    const url = this.urlMap[section];
-    this.selectedSection = section;
-    this.loadChartData(url);
+    return `
+    <div class="analysis-content">
+      <div class="analysis-header">
+        <h3><ion-icon name="analytics"></ion-icon> ${this.selectedSection}</h3>
+        <p class="meta">${fechaInicio} al ${fechaFin} • ${total} casos</p>
+      </div>
+      
+      <div class="key-findings">
+        <p>Distribución: <strong>${distribucion}</strong></p>
+        <p>Analiza brevemente los datos y dame un analisis breve sobre los datos.</p>
+      </div>
+    </div>
+    `;
   }
 
   procesarDatosParaResumen(data: any[]): any[] {
     const resumenMap = new Map<string, number>();
-    
-    // Contar ocurrencias de cada tipo
+
     data.forEach(item => {
       const tipo = item.detalles || item.respuesta;
       resumenMap.set(tipo, (resumenMap.get(tipo) || 0) + 1);
@@ -269,7 +271,6 @@ export class GraficoPage implements OnInit, AfterViewInit {
     const total = data.length;
     const resultado: any[] = [];
 
-    // Convertir a array de objetos con porcentaje
     resumenMap.forEach((cantidad, tipo) => {
       resultado.push({
         tipo: tipo || 'Sin especificar',
@@ -278,7 +279,6 @@ export class GraficoPage implements OnInit, AfterViewInit {
       });
     });
 
-    // Ordenar por cantidad (mayor a menor)
     return resultado.sort((a, b) => b.cantidad - a.cantidad);
   }
 }

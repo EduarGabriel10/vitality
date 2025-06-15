@@ -18,40 +18,16 @@
       refreshingText="Actualizando...">
     </ion-refresher-content>
   </ion-refresher>
-
-  <ion-item>
-    <ion-label>Sección</ion-label>
-    <ion-select [(ngModel)]="selectedSection" (ionChange)="onSectionChange($event.detail.value)">
-      <ion-select-option value="Tos y Flema">Tos y Flema</ion-select-option>
-      <ion-select-option value="Dificultad Respiratoria">Dificultad Respiratoria</ion-select-option>
-      <ion-select-option value="Sintomas Generales">Sintomas Generales</ion-select-option>
-      <ion-select-option value="Otros Indicadores">Otros Indicadores</ion-select-option>
-    </ion-select>
-  </ion-item>
   
-    <!-- Filtros de Año y Mes -->
-    <ion-grid>
-      <ion-row>
-        <ion-col size="6">
-          <ion-select label="Año" [(ngModel)]="selectedYear" (ionChange)="loadChartData()">
-            <ion-select-option *ngFor="let year of availableYears" [value]="year">{{ year }}</ion-select-option>
-          </ion-select>
-        </ion-col>
-        <ion-col size="6">
-          <ion-select label="Mes" [(ngModel)]="selectedMonth" (ionChange)="loadChartData()">
-            <ion-select-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</ion-select-option>
-          </ion-select>
-        </ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col>
-          <ion-button expand="block" color="medium" (click)="resetFilters()">
-            Eliminar Filtros
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <!-- Segment Control -->
+  <ion-segment [(ngModel)]="selectedView" (ionChange)="onViewChange($event)" class="ion-margin-bottom">
+    <ion-segment-button value="pie">
+      <ion-label>Gráfico de Torta</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="line">
+      <ion-label>Consultas por Fecha</ion-label>
+    </ion-segment-button>
+  </ion-segment>
 
   <!-- Loading State -->
   <div *ngIf="loading" class="ion-text-center ion-padding">
@@ -80,53 +56,80 @@
     </ion-button>
   </div>
 
-  <!-- Chart and Summary Container -->
-  <div *ngIf="!loading && !error && chartData.length > 0" class="ion-padding">
-    <ion-grid class="chart-container">
+  <!-- Pie Chart View with Filters -->
+  <div *ngIf="!loading && !error && selectedView === 'pie'" class="ion-padding">
+    <ion-item>
+      <ion-label>Sección</ion-label>
+      <ion-select [(ngModel)]="selectedSection" (ionChange)="onSectionChange($event.detail.value)">
+        <ion-select-option value="Tos y Flema">Tos y Flema</ion-select-option>
+        <ion-select-option value="Dificultad Respiratoria">Dificultad Respiratoria</ion-select-option>
+        <ion-select-option value="Sintomas Generales">Síntomas Generales</ion-select-option>
+        <ion-select-option value="Otros Indicadores">Otros Indicadores</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-grid>
       <ion-row>
-        <!-- Chart (full width on mobile, 2/3 on larger screens) -->
-        <ion-col size="12" size-lg="8">
-          <div class="chart-wrapper">
-            <canvas #pieChart></canvas>
-          </div>
+        <ion-col size="6">
+          <ion-select label="Año" [(ngModel)]="selectedYear" (ionChange)="loadChartData()">
+            <ion-select-option *ngFor="let year of availableYears" [value]="year">{{ year }}</ion-select-option>
+          </ion-select>
+        </ion-col>
+        <ion-col size="6">
+          <ion-select label="Mes" [(ngModel)]="selectedMonth" (ionChange)="loadChartData()">
+            <ion-select-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</ion-select-option>
+          </ion-select>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" color="medium" (click)="resetFilters()">
+            Eliminar Filtros
+          </ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
 
-    <!-- AI Analysis Section -->
-    <ion-card class="analysis-card">
-      <ion-card-header>
-        <ion-card-title>
-          <ion-icon name="analytics" class="analysis-icon"></ion-icon>
-          Análisis de Datos
-        </ion-card-title>
-        <ion-button fill="clear" size="small" (click)="analyzeWithAI(filteredData)" [disabled]="isAnalyzing">
-          <ion-icon slot="start" name="refresh"></ion-icon>
-          Actualizar
-        </ion-button>
-      </ion-card-header>
-
-      <ion-card-content>
-        <!-- Loading State -->
-        <div *ngIf="isAnalyzing" class="ion-text-center ion-padding">
-          <ion-spinner name="crescent"></ion-spinner>
-          <p>Analizando datos...</p>
-        </div>
-
-        <!-- Error State -->
-        <div *ngIf="analysisError && !isAnalyzing" class="ion-text-center ion-padding">
-          <ion-icon name="warning" color="warning" style="font-size: 24px;"></ion-icon>
-          <p>{{ analysisError }}</p>
-          <ion-button (click)="analyzeWithAI(filteredData)" fill="clear" size="small">
-            Reintentar
+    <div *ngIf="chartData.length > 0" class="chart-wrapper">
+      <canvas #pieChart></canvas>
+      
+      <!-- AI Analysis Section -->
+      <ion-card class="analysis-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="analytics" class="analysis-icon"></ion-icon>
+            Análisis de Datos
+          </ion-card-title>
+          <ion-button fill="clear" size="small" (click)="analyzeWithAI(filteredData)" [disabled]="isAnalyzing">
+            <ion-icon slot="start" name="refresh"></ion-icon>
+            Actualizar
           </ion-button>
-        </div>
+        </ion-card-header>
 
-        <!-- Analysis Content -->
-        <div *ngIf="!isAnalyzing && aiAnalysis" class="analysis-content">
-          <p [innerHTML]="aiAnalysis | nl2br"></p>
-        </div>
-      </ion-card-content>
-    </ion-card>
+        <ion-card-content>
+          <div *ngIf="isAnalyzing" class="ion-text-center ion-padding">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Analizando datos...</p>
+          </div>
+
+          <div *ngIf="analysisError && !isAnalyzing" class="ion-text-center ion-padding">
+            <ion-icon name="warning" color="warning" style="font-size: 24px;"></ion-icon>
+            <p>{{ analysisError }}</p>
+            <ion-button (click)="analyzeWithAI(filteredData)" fill="clear" size="small">
+              Reintentar
+            </ion-button>
+          </div>
+
+          <div *ngIf="!isAnalyzing && aiAnalysis" class="analysis-content">
+            <p [innerHTML]="aiAnalysis | nl2br"></p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Line Chart View -->
+  <div *ngIf="!loading && !error && selectedView === 'line'" class="ion-padding">
+    <app-grafico-consultas></app-grafico-consultas>
   </div>
 </ion-content>

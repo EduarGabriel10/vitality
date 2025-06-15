@@ -29,6 +29,10 @@ const routes: Routes = [
         loadChildren: () => import('../diagmedico/diagmedico.module').then(m => m.DiagmedicoPageModule)
       },
       {
+        path: 'datosm/:id',
+        loadChildren: () => import('../datosm/datosm.module').then(m => m.DatosmPageModule)
+      },
+      {
         path: 'horario',
         loadChildren: () => import('../horario/horario.module').then(m => m.HorarioPageModule)
       },
@@ -39,7 +43,8 @@ const routes: Routes = [
       {
         path: 'grafico',
         loadChildren: () => import('../grafico/grafico.module').then(m => m.GraficoPageModule)
-      }
+      },
+
     ]
   }
 ];

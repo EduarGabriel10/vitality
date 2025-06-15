@@ -1,0 +1,41 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Consultas por Fecha</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <canvas #lineChart width="100%"></canvas>
+    
+    <!-- AI Analysis Section -->
+    <ion-card class="analysis-card ion-margin-top">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="analytics" class="analysis-icon"></ion-icon>
+          Análisis de Datos
+        </ion-card-title>
+        <ion-button fill="clear" size="small" (click)="analyzeData()" [disabled]="isAnalyzing">
+          <ion-icon slot="start" name="refresh"></ion-icon>
+          Actualizar
+        </ion-button>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div *ngIf="isAnalyzing" class="ion-text-center ion-padding">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Analizando datos...</p>
+        </div>
+
+        <div *ngIf="analysisError && !isAnalyzing" class="ion-text-center ion-padding">
+          <ion-icon name="warning" color="warning" style="font-size: 24px;"></ion-icon>
+          <p>{{ analysisError }}</p>
+          <ion-button (click)="analyzeData()" fill="clear" size="small">
+            Reintentar
+          </ion-button>
+        </div>
+
+        <div *ngIf="!isAnalyzing && aiAnalysis" class="analysis-content">
+          <p [innerHTML]="aiAnalysis | nl2br"></p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-card-content>
+</ion-card>

@@ -6,7 +6,13 @@ import { DatosmPage } from './datosm.page';
 const routes: Routes = [
   {
     path: '',
-    component: DatosmPage
+    component: DatosmPage,
+    children: [
+      {
+        path: 'datosm/diagmedico/:id',
+        loadChildren: () => import('../diagmedico/diagmedico.module').then( m => m.DiagmedicoPageModule)
+      },
+    ]
   }
 ];
 

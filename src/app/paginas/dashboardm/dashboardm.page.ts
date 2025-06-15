@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { QuestionsService } from 'src/app/services/questions.service';
 import { MedicoService } from 'src/app/services/medico.service';
+import { AlertService } from 'src/app/services/alert.service';
 import { 
   IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, 
   IonCardContent, IonGrid, IonRow, IonCol, IonLabel, IonBadge, IonList, IonItem, 
@@ -59,9 +60,10 @@ export class DashboardmPage implements OnInit, OnDestroy {
   parseInt = parseInt;
 
   constructor(
-    private router: Router,
     private questionsService: QuestionsService,
-    private medicoService: MedicoService
+    private medicoService: MedicoService,
+    private router: Router,
+    private alertService: AlertService
   ) {
     this.loadQuestions();
   }
@@ -152,16 +154,26 @@ export class DashboardmPage implements OnInit, OnDestroy {
   }
 
   eliminarConsulta(consulta: any) {
-    if (confirm(`¿Está seguro de que desea eliminar la consulta de ${consulta.usuario}?`)) {
-      this.medicoService.eliminarConsulta(consulta.id).subscribe({
-        next: () => {
-          this.respuestaDetalle = this.respuestaDetalle.filter(r => r.id !== consulta.id);
-        },
-        error: (error) => {
-          console.error('Error al eliminar la consulta:', error);
-        }
-      });
-    }
+    this.alertService.presentConfirm(
+      'Confirmar eliminación',
+      `¿Está seguro de que desea eliminar la consulta de ${consulta.usuario?.nombre || 'este usuario'}?`,
+      () => {
+        this.medicoService.eliminarConsulta(consulta.id).subscribe({
+          next: () => {
+            this.respuestaDetalle = this.respuestaDetalle.filter(r => r.id !== consulta.id);
+            this.alertService.presentAlert('Éxito', 'La consulta ha sido eliminada correctamente');
+          },
+          error: (error) => {
+            console.error('Error al eliminar la consulta:', error);
+            this.alertService.presentAlert('Error', 'No se pudo eliminar la consulta', ['Aceptar']);
+          }
+        });
+      },
+      () => {
+        // Acción al cancelar (opcional)
+        console.log('Eliminación cancelada');
+      }
+    );
   }
 
   private loadQuestions(): void {

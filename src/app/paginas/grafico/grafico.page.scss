@@ -9,12 +9,33 @@
   position: relative;
   width: 100%;
   margin: 0 auto;
-  max-width: 600px; // Limitar ancho máximo
+  max-width: 600px;
+  min-height: 300px;
   
   canvas {
     width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 1; // Mantener relación de aspecto 1:1
+    height: 100% !important;
+    min-height: 300px;
+  }
+}
+
+// Ensure the line chart takes full width
+app-grafico-consultas {
+  display: block;
+  width: 100%;
+  
+  ion-card {
+    margin: 0;
+    box-shadow: none;
+  }
+  
+  ion-card-content {
+    padding: 0;
+    
+    canvas {
+      width: 100% !important;
+      height: 300px !important;
+    }
   }
 }
 

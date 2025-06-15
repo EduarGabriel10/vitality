@@ -116,6 +116,8 @@ const routes: Routes = [
     path: 'informacion',
     loadChildren: () => import('./paginas/informacion/informacion.module').then( m => m.InformacionPageModule)
   },
+  
+
 
 ];
 
