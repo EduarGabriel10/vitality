@@ -41,7 +41,7 @@ export class GraficoPage implements OnInit, AfterViewInit {
   isAnalyzing: boolean = false;
   analysisError: string | null = null;
   private genAI: any;
-  private apiKey = 'AIzaSyAQ_pZAfPU7bVIFU-pmkmW_KFCiMR7M8SY';
+  private apiKey = 'AIzaSyBGjpUvI2XQIghy4KoQoGEYAxUP3uQsR_o';
 
   // Filtros
   selectedYear: number | null = null;
@@ -254,7 +254,7 @@ export class GraficoPage implements OnInit, AfterViewInit {
       
       <div class="key-findings">
         <p>Distribución: <strong>${distribucion}</strong></p>
-        <p>Analiza brevemente los datos y dame un analisis breve sobre los datos.</p>
+        <p>Analiza brevemente los datos y dame un analisis breve sobre los datos, pero no me des tu opinion sobre el asunto.</p>
       </div>
     </div>
     `;

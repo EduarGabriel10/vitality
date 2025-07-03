@@ -19,7 +19,7 @@ export class DiagnosticoPage {
   respuestasBackend: any[] = [];
   gravedad: number = 0;
   edad: string = '';
-  ApyKey: string = 'AIzaSyAQ_pZAfPU7bVIFU-pmkmW_KFCiMR7M8SY';
+  ApyKey: string = 'AIzaSyDEHy4BltNacE0UlUmy7IqM_dcI5CDjWlY';
   selectedAIModel: string = 'gemini-1.5-flash';
 
   constructor(
@@ -76,7 +76,7 @@ export class DiagnosticoPage {
   }
 
   async enviarConsultaConOtraApi(respuestasIA: any, respuestasBackend: any[], edad: string): Promise<void> {
-    const nuevaApiKey = 'AIzaSyCtZ6ndvLGYHcE5dm9z1FzeLewRpK6qcYk'; 
+    const nuevaApiKey = 'AIzaSyDEHy4BltNacE0UlUmy7IqM_dcI5CDjWlY'; 
     const genAI = new GoogleGenerativeAI(nuevaApiKey);
     const model = genAI.getGenerativeModel({
       model: 'gemini-2.5-flash-preview-04-17',

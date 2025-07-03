@@ -22,7 +22,7 @@ export class BuscarPage {
   constructor(private http: HttpClient) {}
 
   async consultarIA() {
-    const apiKey = 'AIzaSyDgUxDq2byUTJh8Ob83g4JYiYaiapL3enk';
+    const apiKey = 'AIzaSyB55emO_dxz-mFDBUzpj-d8Eheyi7smkNw';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const body = {

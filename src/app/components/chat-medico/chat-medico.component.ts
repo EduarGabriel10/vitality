@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const GEMINI_API_KEY = 'AIzaSyAQ_pZAfPU7bVIFU-pmkmW_KFCiMR7M8SY';
+const GEMINI_API_KEY = 'AIzaSyAccBhJqUDuO9rwvtO4A6uPOoanXup5QRI';
 
 @Component({
   selector: 'app-chat-medico',

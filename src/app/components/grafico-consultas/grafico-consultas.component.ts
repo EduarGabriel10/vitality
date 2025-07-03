@@ -43,7 +43,7 @@ export class GraficoConsultasComponent implements OnInit, AfterViewInit {
   chart: any;
   
   // AI Analysis
-  private readonly apiKey = 'AIzaSyC1AWWszMJAK14n3znaDX-nkIOsvexZC8c';
+  private readonly apiKey = 'AIzaSyBGjpUvI2XQIghy4KoQoGEYAxUP3uQsR_o';
   private genAI: GoogleGenerativeAI;
   
   // UI State
@@ -171,35 +171,152 @@ export class GraficoConsultasComponent implements OnInit, AfterViewInit {
 
     if (this.chart) this.chart.destroy();
 
+    // Gradient for the area under the line
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(56, 128, 255, 0.3)');
+    gradient.addColorStop(1, 'rgba(56, 128, 255, 0.05)');
+
     this.chart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: fechas,
         datasets: [{
-          label: 'Consultas por Fecha',
+          label: 'Número de Consultas',
           data: totales,
-          borderColor: 'rgba(75, 192, 192, 1)',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          tension: 0.3,
+          borderColor: '#3880ff',
+          backgroundColor: gradient,
+          borderWidth: 3,
+          tension: 0.4,
           fill: true,
-          pointRadius: 4
+          pointBackgroundColor: '#fff',
+          pointBorderColor: '#3880ff',
+          pointBorderWidth: 2,
+          pointHoverRadius: 6,
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#3880ff',
+          pointHoverBorderWidth: 2,
+          pointHitRadius: 10,
+          pointStyle: 'circle',
+          pointRadius: totales.length > 30 ? 0 : 4
         }]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              color: '#666',
+              font: {
+                size: 12,
+                family: 'Roboto, "Helvetica Neue", sans-serif'
+              },
+              padding: 20
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleFont: {
+              size: 13,
+              weight: 'bold',
+              family: 'Roboto, "Helvetica Neue", sans-serif'
+            },
+            bodyFont: {
+              size: 13,
+              family: 'Roboto, "Helvetica Neue", sans-serif'
+            },
+            padding: 12,
+            displayColors: false,
+            callbacks: {
+              label: function(context) {
+                return ` ${context.parsed.y} consulta${context.parsed.y !== 1 ? 's' : ''}`;
+              },
+              title: function(context) {
+                return `Fecha: ${context[0].label}`;
+              }
+            }
+          }
+        },
         scales: {
           x: {
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              color: '#666',
+              maxRotation: 45,
+              minRotation: 45,
+              padding: 10,
+              font: {
+                size: 11,
+                family: 'Roboto, "Helvetica Neue", sans-serif'
+              }
+            },
             title: {
               display: true,
-              text: 'Fecha'
+              text: 'Fechas',
+              color: '#666',
+              font: {
+                size: 12,
+                weight: 'bold',
+                family: 'Roboto, "Helvetica Neue", sans-serif'
+              },
+              padding: { top: 10, bottom: 5 }
             }
           },
           y: {
             beginAtZero: true,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)',
+              drawBorder: false
+            },
+            ticks: {
+              color: '#666',
+              padding: 8,
+              font: {
+                size: 11,
+                family: 'Roboto, "Helvetica Neue", sans-serif'
+              },
+              callback: function(value) {
+                return Number.isInteger(value as number) ? value : '';
+              }
+            },
             title: {
               display: true,
-              text: 'Total de Consultas'
+              text: 'Número de Consultas',
+              color: '#666',
+              font: {
+                size: 12,
+                weight: 'bold',
+                family: 'Roboto, "Helvetica Neue", sans-serif'
+              },
+              padding: { bottom: 10, top: 5 }
             }
+          }
+        },
+        animation: {
+          duration: 1500,
+          easing: 'easeInOutQuart'
+        },
+        elements: {
+          line: {
+            borderCapStyle: 'round',
+            borderJoinStyle: 'round'
+          }
+        },
+        layout: {
+          padding: {
+            top: 10,
+            right: 10,
+            bottom: 10,
+            left: 10
           }
         }
       }

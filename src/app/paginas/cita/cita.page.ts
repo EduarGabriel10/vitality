@@ -14,13 +14,18 @@ import { forkJoin } from 'rxjs';
 export class CitaPage implements OnInit {
   datosUsuario: any;
   segmentoSeleccionado: string = 'horarios'; 
-  citas: any[] = []; 
+  citas: any[] = [];
+  citasHoy: any[] = [];
+  citasAnteriores: any[] = [];
+  mostrarCitasAnteriores: boolean = false;
   horarios: any[] = [];
+  horariosPasados: any[] = [];
+  horariosFuturos: any[] = [];
+  mostrarHorariosPasados: boolean = false;
   isLoading: boolean = true;
   error: string | null = null;
   selectedHorario: any = null;
   isModalOpen = false;
-
   medicos: any[] = [];
 
   constructor(
@@ -65,16 +70,33 @@ export class CitaPage implements OnInit {
         const medico = this.medicos.find((m: any) => m.id === horario.medicoId);
         return {
           ...horario,
-          medico: medico || null
+          medico: medico || null,
+          esPasado: this.esHorarioPasado(horario)
         };
       });
       
+      this.separarHorariosPorFecha();
       this.isLoading = false;
     } catch (error) {
       console.error('Error al cargar datos:', error);
       this.error = 'Error al cargar los datos. Por favor, intente de nuevo.';
       this.isLoading = false;
     }
+  }
+
+  esHorarioPasado(horario: any): boolean {
+    const ahora = new Date();
+    const fechaHoraFin = new Date(horario.horaFin);
+    return fechaHoraFin < ahora;
+  }
+
+  separarHorariosPorFecha() {
+    this.horariosFuturos = this.horarios.filter(h => !h.esPasado);
+    this.horariosPasados = this.horarios.filter(h => h.esPasado);
+  }
+
+  toggleHorariosPasados() {
+    this.mostrarHorariosPasados = !this.mostrarHorariosPasados;
   }
 
   agregarCita(horario: any) {
@@ -184,6 +206,27 @@ export class CitaPage implements OnInit {
     }
   }
 
+  esFechaHoy(fecha: string): boolean {
+    const hoy = new Date();
+    const fechaCita = new Date(fecha);
+    return fechaCita.toDateString() === hoy.toDateString();
+  }
+
+  esFechaAnterior(fecha: string): boolean {
+    const hoy = new Date();
+    const fechaCita = new Date(fecha);
+    return fechaCita < hoy && !this.esFechaHoy(fecha);
+  }
+
+  separarCitasPorFecha() {
+    this.citasHoy = this.citas.filter(cita => this.esFechaHoy(cita.fechaHora));
+    this.citasAnteriores = this.citas.filter(cita => this.esFechaAnterior(cita.fechaHora));
+  }
+
+  toggleCitasAnteriores() {
+    this.mostrarCitasAnteriores = !this.mostrarCitasAnteriores;
+  }
+
   async cargarCitas() {
     const loading = await this.loadingController.create({
       message: 'Cargando citas...',
@@ -193,6 +236,7 @@ export class CitaPage implements OnInit {
     try {
       const response = await this.usuarioService.obtenerCitasPorUsuario(this.datosUsuario.id).toPromise();
       this.citas = response || [];
+      this.separarCitasPorFecha();
     } catch (error) {
       console.error('Error al cargar citas:', error);
       const alert = await this.alertController.create({

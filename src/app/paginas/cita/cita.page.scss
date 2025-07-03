@@ -114,6 +114,11 @@
     &:not(.available) {
       color: var(--ion-color-danger);
     }
+    
+    &.past {
+      color: var(--ion-color-medium);
+      font-style: italic;
+    }
   }
 
   .schedule-btn {
@@ -145,8 +150,8 @@
       color: #fff;
     }
 
-    &.cancelled {
-      background-color: var(--ion-color-danger);
+    &.cancelled, &.past {
+      background-color: var(--ion-color-medium);
       color: #fff;
     }
   }
@@ -155,6 +160,67 @@
     margin-top: 0.5rem;
     display: flex;
     justify-content: flex-end;
+  }
+
+  /* Estilos para horarios pasados */
+  .past-schedule {
+    opacity: 0.8;
+    background-color: var(--ion-color-light);
+    
+    .story-content {
+      h3, p, .label {
+        color: var(--ion-color-medium);
+      }
+      
+      .schedule-details {
+        color: var(--ion-color-medium);
+        
+        .time, .day, .date {
+          color: var(--ion-color-medium);
+          
+          ion-icon {
+            color: var(--ion-color-medium) !important;
+          }
+        }
+      }
+    }
+    
+    .status-indicator {
+      ion-icon {
+        color: var(--ion-color-medium) !important;
+      }
+    }
+  }
+  
+  .section-title {
+    color: var(--ion-color-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.5rem 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--ion-color-light);
+  }
+
+  /* Estilos para citas anteriores */
+  .past-appointment {
+    opacity: 0.8;
+    background-color: var(--ion-color-light);
+    
+    .appointment-details,
+    .doctor-info h3,
+    .doctor-info p {
+      color: var(--ion-color-medium);
+    }
+    
+    .detail-item {
+      ion-icon {
+        color: var(--ion-color-medium) !important;
+      }
+    }
+    
+    .appointment-actions {
+      display: none; /* Ocultar acciones en citas pasadas */
+    }
   }
 
   .no-appointments {
